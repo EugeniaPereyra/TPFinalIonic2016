@@ -4,10 +4,6 @@
     <div class="item">
       <div class="card">
         <div class="item item-text-wrap">
-          <label placeholder="Ingrese desafio" ng-model="fecha">{{fecha | date: 'dd/MM/yyyy '}}
-          </label>
-        </div>
-        <div class="item item-text-wrap">
           <textarea placeholder="Ingrese desafio" ng-model="desafio.pregunta" style="width: 100%; text-align: center">
           </textarea>
         </div>
@@ -22,8 +18,13 @@
         <div class="item item-text-wrap">
           <input type="text" placeholder="Ingrese respuesta B" ng-model="desafio.respuestaB">
         </div>
+      </div>
+
+      <br>
+      
+      <div class="card">
         <div class="item item-text-wrap">
-          <input type="text" placeholder="Ingrese respuesta C" ng-model="desafio.respuestaC">
+          <input type="text" placeholder="Ingrese valor de la apuesta" ng-model="desafio.valor">
         </div>
       </div>
       

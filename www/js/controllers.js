@@ -93,6 +93,11 @@ angular.module('starter.controllers', [])
   desafios.on('child_added', function (snapshot) {
         $timeout(function(){
         var desafio = snapshot.val();
+        var fecha = new Date(desafio.fecha);
+        var dia = fecha.getDay();
+        var mes = fecha.getMonth();
+        var anio = fecha.getFullYear();
+        desafio.fecha=dia+"/"+mes+"/"+anio;
         $scope.datos.push(desafio);
       });
   });
@@ -105,7 +110,6 @@ angular.module('starter.controllers', [])
 
 .controller('controlDesafio', function($scope, $ionicPopup, $state) {
   $scope.desafio={};
-  $scope.desafio.fecha = new Date();
 
   $scope.Aceptar=function(){
 
@@ -114,6 +118,7 @@ angular.module('starter.controllers', [])
       $scope.desafio.disponible=true;
       $scope.desafio.computado=false;
       $scope.desafio.jugador="";
+      $scope.desafio.fecha = firebase.database.ServerValue.TIMESTAMP;
 
       var carga=firebase.database().ref('DESAFIOS/');
       carga.push($scope.desafio);
