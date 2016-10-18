@@ -25,20 +25,43 @@ angular.module('starter.controllers', [])
           console.info("Respuesta: ",respuesta);
           $scope.loginData.username="";
           $scope.loginData.password="";
-          
-          if(firebase.auth().currentUser.email == 'meugeniape@gmail.com') //segun rol
-            $state.go('app.carga');
-          else
-            $state.go('app.desafio');
-                      
+
           $scope.hide($ionicLoading); 
+          $state.go('app.mostrar');
         })
         .catch(function(error){
           console.info("Error: ",error);
           $scope.hide($ionicLoading);
           var alertPopup = $ionicPopup.alert({
-              title: 'Login failed!',
+              title: 'Login falló!',
               template: error //'Please check your credentials!'
+            });
+        });
+  };
+
+  $scope.Crear = function() {
+    // Start showing the progress
+    $scope.show($ionicLoading);
+
+    //var result = 
+    firebase.auth().createUserWithEmailAndPassword($scope.loginData.username,$scope.loginData.password)
+        .then(function(respuesta){
+          console.info("Respuesta: ",respuesta);
+          $scope.loginData.username="";
+          $scope.loginData.password="";
+                                
+          $scope.hide($ionicLoading); 
+          var alertPopup = $ionicPopup.alert({
+              title: 'Registrado!',
+              template: 'Ya puede ingresar con su email y password' 
+            });
+        })
+        .catch(function(error){
+          console.info("Error: ",error);
+          $scope.hide($ionicLoading);
+          var alertPopup = $ionicPopup.alert({
+              title: 'Registro falló!',
+              template: error 
             });
         });
   };
@@ -80,15 +103,17 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('controlDesafio', function($scope, $ionicPopup) {
+.controller('controlDesafio', function($scope, $ionicPopup, $state) {
   $scope.desafio={};
-  $scope.fecha = new Date();
+  $scope.desafio.fecha = new Date();
 
   $scope.Aceptar=function(){
 
     if(firebase.auth().currentUser != null && firebase.auth().currentUser != undefined){
       $scope.desafio.creador = firebase.auth().currentUser.email;
       $scope.desafio.disponible=true;
+      $scope.desafio.computado=false;
+      $scope.desafio.jugador="";
 
       var carga=firebase.database().ref('DESAFIOS/');
       carga.push($scope.desafio);
