@@ -1,1 +1,5 @@
 /* Empty. Add your own CSS if you like */
+.ng-hide-add         { animation:0.5s fadeOutUp ease; }
+
+/* when showing the picture */
+.ng-hide-remove      { animation:0.5s fadeInDown ease; }

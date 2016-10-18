@@ -1,56 +1,165 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+  $scope.show = function() {
+    $ionicLoading.show({
+      template: '<ion-spinner icon="android"></ion-spinner>'
+    });
+  };
 
-  // Form data for the login modal
+  $scope.hide = function(){
+        $ionicLoading.hide();
+  };
+
   $scope.loginData = {};
 
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
+  // Perform the login action when the user submits the login form
+  $scope.Loguear = function() {
+    // Start showing the progress
+    $scope.show($ionicLoading);
+
+    //var result = 
+    firebase.auth().signInWithEmailAndPassword($scope.loginData.username,$scope.loginData.password)
+        .then(function(respuesta){
+          console.info("Respuesta: ",respuesta);
+          $scope.loginData.username="";
+          $scope.loginData.password="";
+          
+          if(firebase.auth().currentUser.email == 'meugeniape@gmail.com') //segun rol
+            $state.go('app.carga');
+          else
+            $state.go('app.desafio');
+                      
+          $scope.hide($ionicLoading); 
+        })
+        .catch(function(error){
+          console.info("Error: ",error);
+          $scope.hide($ionicLoading);
+          var alertPopup = $ionicPopup.alert({
+              title: 'Login failed!',
+              template: error //'Please check your credentials!'
+            });
+        });
+  };
+
+  $scope.Logout = function() {
+    firebase.auth().signOut();
+    $state.go('login');
+  };
+
+})
+
+.controller('controlMostrar', function($scope, $state, $ionicPopup, $ionicLoading, $timeout) {
+  $scope.show = function() {
+    $ionicLoading.show({
+      template: '<ion-spinner icon="android"></ion-spinner>'
+      
+    });
+  };
+
+  $scope.hide = function(){
+        $ionicLoading.hide();
+  };
+
+  $scope.datos=[];
+  
+  $scope.show($ionicLoading);
+
+  var desafios=firebase.database().ref('DESAFIOS/');
+  desafios.on('child_added', function (snapshot) {
+        $timeout(function(){
+        var desafio = snapshot.val();
+        $scope.datos.push(desafio);
+      });
   });
 
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
+  $scope.hide($ionicLoading); 
 
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
+  console.log($scope.datos);
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
 })
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
+.controller('controlDesafio', function($scope, $ionicPopup) {
+  $scope.desafio={};
+  $scope.fecha = new Date();
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+  $scope.Aceptar=function(){
+
+    if(firebase.auth().currentUser != null && firebase.auth().currentUser != undefined){
+      $scope.desafio.creador = firebase.auth().currentUser.email;
+      $scope.desafio.disponible=true;
+
+      var carga=firebase.database().ref('DESAFIOS/');
+      carga.push($scope.desafio);
+      $ionicPopup.alert({
+         title: 'El desafio se ha guardado correctamente',
+         okType: 'button-balanced',
+      });
+
+      $state.go('app.mostrar');
+
+    }
+    else{
+      $ionicPopup.alert({
+         title: 'El usuario no se encuentra logueado',
+         okType: 'button-balanced',
+      });
+    }
+
+  }
 });
+
+/*
+.controller('controlConsumo', function($scope, $timeout, $state, $ionicPopup) {
+  $scope.codigo={};
+  var cargas=[];
+  var ref=firebase.database().ref('SALDOS/');
+  ref.on('child_added', function (snapshot) {
+        $timeout(function(){
+        var saldo = snapshot.val();
+        cargas.push(saldo);
+      });
+  });
+  
+  $scope.Aceptar=function(){
+    var i;
+
+    for( i=0 ; i<cargas.length; i++)
+    {
+        if(cargas[i].codigo==$scope.codigo.saldo)
+        {
+          if(!cargas[i].consumido)
+          {
+            cargas[i].usuario=firebase.auth().currentUser.email;
+            cargas[i].consumido=true;
+            $ionicPopup.alert({
+              title: 'Saldo consumido correctamente',
+              okType: 'button-energized',
+            });
+            ref.set(cargas);
+            $state.go('login');
+            break;
+          }
+          else
+          {
+            $ionicPopup.alert({
+              title: 'El saldo ya ha sido consumido',
+              okType: 'button-energized',
+            });
+            break;
+          }
+        } 
+    }
+
+    if(i==cargas.length)
+    {
+      $ionicPopup.alert({
+          title: 'El codigo no existe',
+          okType: 'button-energized',
+       });
+    }
+  }
+
+});
+*/

@@ -1,0 +1,40 @@
+<ion-view view-title="Nuevo Desafio">
+  <ion-content>
+  <center>
+    <div class="item">
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label placeholder="Ingrese desafio" ng-model="fecha">{{fecha | date: 'dd/MM/yyyy '}}
+          </label>
+        </div>
+        <div class="item item-text-wrap">
+          <textarea placeholder="Ingrese desafio" ng-model="desafio.pregunta" style="width: 100%; text-align: center">
+          </textarea>
+        </div>
+      </div>
+      
+      <br>
+      
+      <div class="card">
+        <div class="item item-text-wrap">
+          <input type="text" placeholder="Ingrese respuesta A" ng-model="desafio.respuestaA">
+        </div>
+        <div class="item item-text-wrap">
+          <input type="text" placeholder="Ingrese respuesta B" ng-model="desafio.respuestaB">
+        </div>
+        <div class="item item-text-wrap">
+          <input type="text" placeholder="Ingrese respuesta C" ng-model="desafio.respuestaC">
+        </div>
+      </div>
+      
+      <br>
+      
+    
+      <button class="button button-large button-outline button-balanced" ng-click="Aceptar()">
+        Aceptar
+      </button>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>

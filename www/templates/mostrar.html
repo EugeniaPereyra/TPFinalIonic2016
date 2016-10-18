@@ -1,0 +1,17 @@
+<ion-view view-title="DESAFIOS VIGENTES">
+  <ion-content>
+  <center>
+
+      <div ng-repeat="desafio in datos">
+          <div ng-show="desafio.disponible">
+            <br>
+            <ion-item>
+                {{desafio.pregunta}}
+            </ion-item>
+            <br>
+          </div>
+      </div>
+       
+	</center>
+  </ion-content>
+</ion-view>
