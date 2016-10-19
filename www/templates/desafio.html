@@ -4,21 +4,31 @@
     <div class="item">
       <div class="card">
         <div class="item item-text-wrap">
-          <textarea placeholder="Ingrese desafio" ng-model="desafio.pregunta" style="width: 100%; text-align: center">
+          <label><strong>Ingrese desafio:</strong></label><br>
+          <textarea ng-model="desafio.pregunta" style="width: 100%; text-align: center">
           </textarea>
         </div>
       </div>      
       <div class="card">
         <div class="item item-text-wrap">
-          <input type="text" placeholder="Ingrese respuesta A" ng-model="desafio.respuestaA" style="width: 100%; text-align: center">
+        <label><strong>Ingrese respuesta A:</strong></label><br>
+          <input type="text" ng-model="desafio.respuestaA" style="width: 100%; text-align: center">
         </div>
         <div class="item item-text-wrap">
-          <input type="text" placeholder="Ingrese respuesta B" ng-model="desafio.respuestaB" style="width: 100%; text-align: center">
+          <label><strong>Ingrese respuesta B:</strong></label><br>
+          <input type="text" ng-model="desafio.respuestaB" style="width: 100%; text-align: center">
         </div>
       </div>      
       <div class="card">
         <div class="item item-text-wrap">
-          <input type="text" placeholder="Ingrese valor de la apuesta" ng-model="desafio.valor" style="width: 100%; text-align: center">
+          <label><strong>Ingrese valor de la apuesta:</strong></label><br>
+          <input type="text" ng-model="desafio.valor" style="width: 100%; text-align: center">
+        </div>
+      </div>
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Ingrese fecha de finalizacion:</strong></label><br>
+          <input type="date" ng-model="fecha" style="width: 100%; text-align: center">
         </div>
       </div>
       

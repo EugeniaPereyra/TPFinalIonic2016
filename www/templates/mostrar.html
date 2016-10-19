@@ -7,10 +7,10 @@
             <div ng-show="desafio.disponible">
               <br>
               <ion-item ng-click="mostrarDesafio($index)">
-                  Fecha: {{desafio.fecha | date: "dd/MM/yyyy hh:mm:ss"}} - Desafio: {{desafio.pregunta}} - Valor: {{desafio.valor}}
-                  <br>
+                  <h2><strong>{{desafio.pregunta}}</strong></h2><br>
+                  <h3>{{desafio.valor | currency}}</h3><br>
                   Finaliza en:
-                  <!-- <timer autostart="{{desafio.disponible}}" countdown="{{desafio.duracion}}" interval="1000" finish-callback="Terminado(desafio)">{{days}} day{{daysS}}, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds</timer> -->
+                  <timer autostart="false" countdown="(desafio.fechaFin - desafio.fechaInicio)" interval="1000" finish-callback="Terminado(desafio)">{{days}} day{{daysS}}, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds</timer>
               </ion-item>
               <br>
             </div>

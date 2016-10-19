@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.factories'])
 
-.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup) {
+.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, UsuarioService) {
 
   $scope.show = function() {
     $ionicLoading.show({
@@ -19,22 +19,28 @@ angular.module('starter.controllers', ['starter.factories'])
     // Start showing the progress
     $scope.show($ionicLoading);
 
-    //var result = 
     firebase.auth().signInWithEmailAndPassword($scope.loginData.username,$scope.loginData.password)
         .then(function(respuesta){
           console.info("Respuesta: ",respuesta);
           $scope.loginData.username="";
           $scope.loginData.password="";
+          $scope.hide($ionicLoading);
 
-          $scope.hide($ionicLoading); 
-          $state.go('app.mostrar');
+          if(respuesta.emailVerified)
+          {
+            $state.go('app.mostrar');
+          }
+          else
+          {
+            Verificar();
+          }
         })
         .catch(function(error){
           console.info("Error: ",error);
           $scope.hide($ionicLoading);
           var alertPopup = $ionicPopup.alert({
-              title: 'Login falló!',
-              template: error //'Please check your credentials!'
+              title: 'Error',
+              template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
             });
         });
   };
@@ -52,15 +58,16 @@ angular.module('starter.controllers', ['starter.factories'])
                                 
           $scope.hide($ionicLoading); 
 
-          var usuario=firebase.database().ref('USUARIOS/');
           $scope.usuario={};
           $scope.usuario.id=respuesta.uid;
           $scope.usuario.credito=1000;
-          usuario.push($scope.usuario);
+          
+          UsuarioService.add($scope.usuario);
 
           var alertPopup = $ionicPopup.alert({
               title: 'Registrado!',
-              template: 'Ya puede ingresar con su email y password' 
+              template: '<center>Ha obtenido $1000.00 de credito de regalo de bienvenida.'
+              +'<br>Ya puede ingresar con su email y password</center>' 
             });
         })
         .catch(function(error){
@@ -72,6 +79,48 @@ angular.module('starter.controllers', ['starter.factories'])
             });
         });
   };
+
+  $scope.Resetear=function(){
+    $scope.show($ionicLoading);
+    firebase.auth().sendPasswordResetEmail($scope.loginData.username)
+    .then(function(respuesta){
+      $scope.hide($ionicLoading);
+      console.info("Respuesta: ", respuesta);
+      var alertPopup = $ionicPopup.alert({
+              title: 'Atencion',
+              template: 'Por favor, revise su correo electronico!' //'Please check your credentials!'
+        });
+    })
+    .catch(function(error){
+      $scope.hide($ionicLoading);
+      console.info("Error: ",error);
+      var alertPopup = $ionicPopup.alert({
+              title: 'Error',
+              template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
+            });
+    })
+  }
+
+  function Verificar(){
+    $scope.show($ionicLoading);
+    firebase.auth().currentUser.sendEmailVerification()
+    .then(function(respuesta){
+      $scope.hide($ionicLoading);
+      console.info("Respuesta: ", respuesta);
+      var alertPopup = $ionicPopup.alert({
+              title: 'Atencion',
+              template: 'Necesita verificar su email. Por favor, revise su correo electronico!' //'Please check your credentials!'
+        });
+    })
+    .catch(function(error){
+      $scope.hide($ionicLoading);
+      console.info("Error: ",error);
+      var alertPopup = $ionicPopup.alert({
+              title: 'Error',
+              template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
+            });
+    })
+  }
 
   $scope.Logout = function() {
     firebase.auth().signOut();
@@ -112,8 +161,9 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio.disponible=true;
   $scope.desafio.computado=false;
   $scope.desafio.jugador="";
-  $scope.desafio.duracion=30;
-  $scope.desafio.fecha = firebase.database.ServerValue.TIMESTAMP;
+  $scope.desafio.fechaInicio = firebase.database.ServerValue.TIMESTAMP;
+  $scope.fecha=new Date();
+  $scope.desafio.fechaFin=$scope.fecha.getTime();
 
   $scope.Aceptar=function(){
 
@@ -132,6 +182,7 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio=JSON.parse($stateParams.desafio);
   $scope.desafio.jugador=firebase.auth().currentUser.email;
   $scope.credito=0;
+  var i;
 
   $scope.usuarios=[];
   
@@ -145,15 +196,16 @@ angular.module('starter.controllers', ['starter.factories'])
   });
 
   console.log(firebase.auth().currentUser);
-  console.log($scope.usuarios);
+  //console.log(UsuarioService.getByIndex(0));
 
-  for(var i=0;i<$scope.usuarios.lengh;i++)
-  {
-    if($scope.usuarios[i].id==firebase.auth().currentUser.uid)
+  angular.forEach($scope.usuarios, function(value, index){
+    console.log(value);
+    if(value.id==firebase.auth().currentUser.uid)
     {
-      $scope.credito=$scope.usuarios[i].credito;
+      $scope.credito=value.credito;
     }
-  }
+
+  });
 
 // ACA MODIFICAR LAS COSAS DESAFIO Y USUARIO
   // $scope.Aceptar=function(){
