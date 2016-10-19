@@ -99,6 +99,11 @@ angular.module('starter.controllers', ['starter.factories'])
     var dato=JSON.stringify(DesafioService.getByIndex(index));
     $state.go('app.apuesta', {desafio:dato} );
   }
+
+  $scope.Terminado=function(desafio){
+    desafio.disponible=false;
+
+  }
 })
 
 .controller('controlDesafio', function($scope, $ionicPopup, $state, $stateParams, DesafioService) {
@@ -107,6 +112,7 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio.disponible=true;
   $scope.desafio.computado=false;
   $scope.desafio.jugador="";
+  $scope.desafio.duracion=30;
   $scope.desafio.fecha = firebase.database.ServerValue.TIMESTAMP;
 
   $scope.Aceptar=function(){
@@ -115,7 +121,7 @@ angular.module('starter.controllers', ['starter.factories'])
 
       $ionicPopup.alert({
          title: 'El desafio se ha guardado correctamente',
-         okType: 'button-balanced',
+         okType: 'button-balanced'
       });
 
       $state.go('app.mostrar');
@@ -149,16 +155,17 @@ angular.module('starter.controllers', ['starter.factories'])
     }
   }
 
-  $scope.Aceptar=function(){
+// ACA MODIFICAR LAS COSAS DESAFIO Y USUARIO
+  // $scope.Aceptar=function(){
 
-      DesafioService.add($scope.desafio);
+  //     DesafioService.add($scope.desafio);
 
-      $ionicPopup.alert({
-         title: 'El desafio se ha guardado correctamente',
-         okType: 'button-balanced',
-      });
+  //     $ionicPopup.alert({
+  //        title: 'El desafio se ha guardado correctamente',
+  //        okType: 'button-balanced'
+  //     });
 
-      $state.go('app.mostrar');
-    }
-})
+  //     $state.go('app.mostrar');
+  //   }
+});
 

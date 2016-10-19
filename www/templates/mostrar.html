@@ -8,6 +8,9 @@
               <br>
               <ion-item ng-click="mostrarDesafio($index)">
                   Fecha: {{desafio.fecha | date: "dd/MM/yyyy hh:mm:ss"}} - Desafio: {{desafio.pregunta}} - Valor: {{desafio.valor}}
+                  <br>
+                  Finaliza en:
+                  <!-- <timer autostart="{{desafio.disponible}}" countdown="{{desafio.duracion}}" interval="1000" finish-callback="Terminado(desafio)">{{days}} day{{daysS}}, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds</timer> -->
               </ion-item>
               <br>
             </div>
