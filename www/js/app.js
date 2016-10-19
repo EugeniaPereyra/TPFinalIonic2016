@@ -57,6 +57,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories'])
           controller: 'controlDesafio'
         }
       }
+    })
+
+    .state('app.apuesta', {
+    url: '/apuesta/:desafio',
+    cache: false,
+    views: {
+      'menuContent': {
+          templateUrl: 'templates/apuesta.html',
+          controller: 'controlApuesta'
+        }
+      }
   })
 
   // if none of the above states are matched, use this as the fallback

@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['starter.factories'])
 
 .controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup) {
 
@@ -51,6 +51,13 @@ angular.module('starter.controllers', [])
           $scope.loginData.password="";
                                 
           $scope.hide($ionicLoading); 
+
+          var usuario=firebase.database().ref('USUARIOS/');
+          $scope.usuario={};
+          $scope.usuario.id=respuesta.uid;
+          $scope.usuario.credito=1000;
+          usuario.push($scope.usuario);
+
           var alertPopup = $ionicPopup.alert({
               title: 'Registrado!',
               template: 'Ya puede ingresar con su email y password' 
@@ -73,123 +80,85 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('controlMostrar', function($scope, $state, $ionicPopup, $ionicLoading, $timeout) {
-  $scope.show = function() {
-    $ionicLoading.show({
-      template: '<ion-spinner icon="android"></ion-spinner>'
-      
-    });
-  };
-
-  $scope.hide = function(){
-        $ionicLoading.hide();
-  };
-
+.controller('controlMostrar', function($scope, $state, $ionicLoading, $timeout, DesafioService) {
+  
   $scope.datos=[];
   
   $scope.show($ionicLoading);
 
-  var desafios=firebase.database().ref('DESAFIOS/');
-  desafios.on('child_added', function (snapshot) {
-        $timeout(function(){
-        var desafio = snapshot.val();
-        var fecha = new Date(desafio.fecha);
-        var dia = fecha.getDay();
-        var mes = fecha.getMonth();
-        var anio = fecha.getFullYear();
-        desafio.fecha=dia+"/"+mes+"/"+anio;
-        $scope.datos.push(desafio);
-      });
+  $scope.datos = DesafioService.getAll();
+
+  $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
+    console.log($scope.datos);
+    $scope.hide($ionicLoading); 
   });
 
-  $scope.hide($ionicLoading); 
-
-  console.log($scope.datos);
-
+  $scope.mostrarDesafio = function(index){
+    // cambia al state de mostrar el desafio pasandole el index
+    //console.log(DesafioService.getByIndex(index));
+    var dato=JSON.stringify(DesafioService.getByIndex(index));
+    $state.go('app.apuesta', {desafio:dato} );
+  }
 })
 
-.controller('controlDesafio', function($scope, $ionicPopup, $state) {
+.controller('controlDesafio', function($scope, $ionicPopup, $state, $stateParams, DesafioService) {
   $scope.desafio={};
+  $scope.desafio.creador = firebase.auth().currentUser.email;
+  $scope.desafio.disponible=true;
+  $scope.desafio.computado=false;
+  $scope.desafio.jugador="";
+  $scope.desafio.fecha = firebase.database.ServerValue.TIMESTAMP;
 
   $scope.Aceptar=function(){
 
-    if(firebase.auth().currentUser != null && firebase.auth().currentUser != undefined){
-      $scope.desafio.creador = firebase.auth().currentUser.email;
-      $scope.desafio.disponible=true;
-      $scope.desafio.computado=false;
-      $scope.desafio.jugador="";
-      $scope.desafio.fecha = firebase.database.ServerValue.TIMESTAMP;
+      DesafioService.add($scope.desafio);
 
-      var carga=firebase.database().ref('DESAFIOS/');
-      carga.push($scope.desafio);
       $ionicPopup.alert({
          title: 'El desafio se ha guardado correctamente',
          okType: 'button-balanced',
       });
 
       $state.go('app.mostrar');
-
     }
-    else{
+})
+
+.controller('controlApuesta', function($scope, $state, $stateParams, UsuarioService, $ionicLoading) {
+  $scope.desafio=JSON.parse($stateParams.desafio);
+  $scope.desafio.jugador=firebase.auth().currentUser.email;
+  $scope.credito=0;
+
+  $scope.usuarios=[];
+  
+  $scope.show($ionicLoading);
+
+  $scope.usuarios = UsuarioService.getAll();
+
+  $scope.usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
+    console.log($scope.usuarios);
+    $scope.hide($ionicLoading); 
+  });
+
+  console.log(firebase.auth().currentUser);
+  console.log($scope.usuarios);
+
+  for(var i=0;i<$scope.usuarios.lengh;i++)
+  {
+    if($scope.usuarios[i].id==firebase.auth().currentUser.uid)
+    {
+      $scope.credito=$scope.usuarios[i].credito;
+    }
+  }
+
+  $scope.Aceptar=function(){
+
+      DesafioService.add($scope.desafio);
+
       $ionicPopup.alert({
-         title: 'El usuario no se encuentra logueado',
+         title: 'El desafio se ha guardado correctamente',
          okType: 'button-balanced',
       });
+
+      $state.go('app.mostrar');
     }
+})
 
-  }
-});
-
-/*
-.controller('controlConsumo', function($scope, $timeout, $state, $ionicPopup) {
-  $scope.codigo={};
-  var cargas=[];
-  var ref=firebase.database().ref('SALDOS/');
-  ref.on('child_added', function (snapshot) {
-        $timeout(function(){
-        var saldo = snapshot.val();
-        cargas.push(saldo);
-      });
-  });
-  
-  $scope.Aceptar=function(){
-    var i;
-
-    for( i=0 ; i<cargas.length; i++)
-    {
-        if(cargas[i].codigo==$scope.codigo.saldo)
-        {
-          if(!cargas[i].consumido)
-          {
-            cargas[i].usuario=firebase.auth().currentUser.email;
-            cargas[i].consumido=true;
-            $ionicPopup.alert({
-              title: 'Saldo consumido correctamente',
-              okType: 'button-energized',
-            });
-            ref.set(cargas);
-            $state.go('login');
-            break;
-          }
-          else
-          {
-            $ionicPopup.alert({
-              title: 'El saldo ya ha sido consumido',
-              okType: 'button-energized',
-            });
-            break;
-          }
-        } 
-    }
-
-    if(i==cargas.length)
-    {
-      $ionicPopup.alert({
-          title: 'El codigo no existe',
-          okType: 'button-energized',
-       });
-    }
-  }
-
-});
-*/

@@ -1,17 +1,18 @@
-<ion-view view-title="DESAFIOS VIGENTES">
+<ion-view view-title="Desafios Vigentes">
   <ion-content>
   <center>
 
-      <div ng-repeat="desafio in datos">
-          <div ng-show="desafio.disponible">
-            <br>
-            <ion-item>
-                Fecha: {{desafio.fecha}} - Desafio: {{desafio.pregunta}} - Valor: {{desafio.valor}}
-            </ion-item>
-            <br>
-          </div>
-      </div>
-       
-	</center>
+      <ion-list>
+        <div ng-repeat="desafio in datos">
+            <div ng-show="desafio.disponible">
+              <br>
+              <ion-item ng-click="mostrarDesafio($index)">
+                  Fecha: {{desafio.fecha | date: "dd/MM/yyyy hh:mm:ss"}} - Desafio: {{desafio.pregunta}} - Valor: {{desafio.valor}}
+              </ion-item>
+              <br>
+            </div>
+        </div>
+       </ion-list>
+  </center>
   </ion-content>
 </ion-view>

@@ -1,0 +1,34 @@
+<ion-view view-title="Apuesta por {{desafio.valor}} creditos">
+  <ion-content>
+    <center>
+      <div class="item">
+
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="desafio.pregunta" >{{desafio.pregunta}}
+            </ion-item>
+          </div>
+        </div>  
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="desafio.respuestaA" >{{desafio.respuestaA}}
+            </ion-item>
+          </div>
+        </div>
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="desafio.respuestaB" >{{desafio.respuestaB}}
+            </ion-item>
+          </div>
+        </div>
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="credito" ><label>Tu credito disponible es: {{credito}}</label>
+            </ion-item>
+          </div>
+        </div>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>
