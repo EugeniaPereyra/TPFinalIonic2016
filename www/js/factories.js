@@ -17,7 +17,15 @@ angular.module('starter.factories', ["firebase"])
 
                 getByIndex: function(index){
                     return arrayDesafios[index];
+                },
+                //
+                add: function(desafio){
+                    arrayDesafios.$add(desafio).then(function(ref){
+                        var id = ref.key;
+                        console.log("Se agrego el id " + id);
+                    });
                 }
+
             };
         }])
 
