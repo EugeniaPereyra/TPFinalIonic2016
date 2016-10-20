@@ -122,6 +122,54 @@ angular.module('starter.controllers', ['starter.factories'])
   //   })
   // }
 
+  $scope.LoguearGit=function(){
+    var i=0;
+    var provider = new firebase.auth.GithubAuthProvider();
+    $scope.show($ionicLoading);
+    firebase.auth().signInWithPopup(provider)
+    .then(function(result) {
+      $scope.hide($ionicLoading);
+      //console.info(result);
+      // The signed-in user info.
+      var user = result.user;
+      console.info(user);
+      
+      var usuarios=[];
+      $scope.show($ionicLoading);
+      usuarios = UsuarioService.getAll();
+      usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
+        $scope.hide($ionicLoading); 
+      });
+
+      for(i=0;i<usuarios.length;i++)
+      {
+        if(user.uid==usuarios[i].id)
+        {
+          break;
+        }
+      }
+      if(i==usuarios.length)
+      {
+          var usuario={};
+          usuario.id=user.uid;
+          usuario.credito=1000;
+          
+          UsuarioService.add(usuario);
+      }
+      $state.go('app.mostrar');
+
+      // ...
+    }).catch(function(error) {
+          console.info("Error: ",error);
+          $scope.hide($ionicLoading);
+          var alertPopup = $ionicPopup.alert({
+              title: 'Error',
+              template: 'Error al loguearse con GitHub' //'Please check your credentials!'
+            });
+    });
+
+  }
+
   $scope.Logout = function() {
     firebase.auth().signOut();
     $state.go('login');
@@ -182,21 +230,16 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio=JSON.parse($stateParams.desafio);
   $scope.desafio.jugador=firebase.auth().currentUser.email;
   $scope.credito=0;
-  var i;
 
   $scope.usuarios=[];
-  
   $scope.show($ionicLoading);
-
   $scope.usuarios = UsuarioService.getAll();
-
   $scope.usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
     console.log($scope.usuarios);
     $scope.hide($ionicLoading); 
   });
 
-  console.log(firebase.auth().currentUser);
-  //console.log(UsuarioService.getByIndex(0));
+  //console.log(firebase.auth().currentUser);
 
   angular.forEach($scope.usuarios, function(value, index){
     console.log(value);
@@ -204,7 +247,6 @@ angular.module('starter.controllers', ['starter.factories'])
     {
       $scope.credito=value.credito;
     }
-
   });
 
 // ACA MODIFICAR LAS COSAS DESAFIO Y USUARIO
