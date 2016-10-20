@@ -26,14 +26,14 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.loginData.password="";
           $scope.hide($ionicLoading);
 
-          if(respuesta.emailVerified)
-          {
+          //if(respuesta.emailVerified)
+          //{
             $state.go('app.mostrar');
-          }
+          /*}
           else
           {
             Verificar();
-          }
+          }*/
         })
         .catch(function(error){
           console.info("Error: ",error);
@@ -101,26 +101,26 @@ angular.module('starter.controllers', ['starter.factories'])
     })
   }
 
-  function Verificar(){
-    $scope.show($ionicLoading);
-    firebase.auth().currentUser.sendEmailVerification()
-    .then(function(respuesta){
-      $scope.hide($ionicLoading);
-      console.info("Respuesta: ", respuesta);
-      var alertPopup = $ionicPopup.alert({
-              title: 'Atencion',
-              template: 'Necesita verificar su email. Por favor, revise su correo electronico!' //'Please check your credentials!'
-        });
-    })
-    .catch(function(error){
-      $scope.hide($ionicLoading);
-      console.info("Error: ",error);
-      var alertPopup = $ionicPopup.alert({
-              title: 'Error',
-              template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
-            });
-    })
-  }
+  // function Verificar(){
+  //   $scope.show($ionicLoading);
+  //   firebase.auth().currentUser.sendEmailVerification()
+  //   .then(function(respuesta){
+  //     $scope.hide($ionicLoading);
+  //     console.info("Respuesta: ", respuesta);
+  //     var alertPopup = $ionicPopup.alert({
+  //             title: 'Atencion',
+  //             template: 'Necesita verificar su email. Por favor, revise su correo electronico!' //'Please check your credentials!'
+  //       });
+  //   })
+  //   .catch(function(error){
+  //     $scope.hide($ionicLoading);
+  //     console.info("Error: ",error);
+  //     var alertPopup = $ionicPopup.alert({
+  //             title: 'Error',
+  //             template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
+  //           });
+  //   })
+  // }
 
   $scope.Logout = function() {
     firebase.auth().signOut();
@@ -163,7 +163,7 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio.jugador="";
   $scope.desafio.fechaInicio = firebase.database.ServerValue.TIMESTAMP;
   $scope.fecha=new Date();
-  $scope.desafio.fechaFin=$scope.fecha.getTime();
+  $scope.desafio.fechaFin = $scope.fecha.getTime();
 
   $scope.Aceptar=function(){
 
