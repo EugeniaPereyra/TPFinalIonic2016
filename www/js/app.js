@@ -50,7 +50,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
 
     .state('app.desafio', {
     url: '/desafio',
-    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/desafio.html',
@@ -61,11 +60,40 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
 
     .state('app.apuesta', {
     url: '/apuesta/:desafio',
-    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/apuesta.html',
           controller: 'controlApuesta'
+        }
+      }
+  })
+
+    .state('app.aceptados', {
+    url: '/aceptados',
+    views: {
+      'menuContent': {
+          templateUrl: 'templates/aceptados.html',
+          controller: 'controlAceptados'
+        }
+      }
+  })
+
+    .state('app.misDesafios', {
+    url: '/misDesafios/:email',
+    views: {
+      'menuContent': {
+          templateUrl: 'templates/mostrar.html',
+          controller: 'controlMisDesafios'
+        }
+      }
+  })
+
+  .state('app.autor', {
+    url: '/autor',
+    views: {
+      'menuContent': {
+          templateUrl: 'templates/autor.html',
+          controller: 'AutorCtrl'
         }
       }
   })

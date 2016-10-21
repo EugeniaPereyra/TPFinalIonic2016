@@ -12,6 +12,10 @@ angular.module('starter.factories', ["firebase"])
 
             return {
                 getAll: function(){
+                    if(arrayDesafios == undefined || arrayDesafios == null){
+                        ref = firebase.database().ref('DESAFIOS/');
+                        arrayDesafios = $firebaseArray(ref);
+                    }
                     return arrayDesafios;
                 },
 
@@ -36,6 +40,10 @@ angular.module('starter.factories', ["firebase"])
 
             return {
                 getAll: function(){
+                    if(arrayUsuarios == undefined || arrayUsuarios == null){
+                        ref = firebase.database().ref('USUARIOS/');
+                        arrayUsuarios = $firebaseArray(ref);
+                    }
                     return arrayUsuarios;
                 },
 

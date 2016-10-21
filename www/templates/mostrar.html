@@ -1,8 +1,8 @@
-<ion-view view-title="Desafios Vigentes">
+<ion-view view-title="{{titulo}}" class="pagina">
   <ion-content>
   <center>
 
-      <ion-list>
+      <ion-list ng-show="todos">
         <div ng-repeat="desafio in datos">
             <div ng-show="desafio.disponible">
               <br>
@@ -16,6 +16,20 @@
             </div>
         </div>
        </ion-list>
+
+       <ion-list ng-show="mostrar">
+        <div ng-repeat="desafio in datos">
+            <div ng-if="desafio.creador == email">
+              <br>
+              <ion-item ng-click="mostrarDesafio($index)">
+                  <h2><strong>{{desafio.pregunta}}</strong></h2><br>
+                  <h3>{{desafio.valor | currency}}</h3><br>
+              </ion-item>
+              <br>
+            </div>
+        </div>
+       </ion-list>
+
   </center>
   </ion-content>
 </ion-view>

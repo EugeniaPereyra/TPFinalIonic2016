@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.factories'])
 
-.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, UsuarioService) {
+.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup) {
 
   $scope.show = function() {
     $ionicLoading.show({
@@ -26,14 +26,14 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.loginData.password="";
           $scope.hide($ionicLoading);
 
-          //if(respuesta.emailVerified)
-          //{
+          if(firebase.auth().currentUser.emailVerified)
+          {
             $state.go('app.mostrar');
-          /*}
+          }
           else
           {
             Verificar();
-          }*/
+          }
         })
         .catch(function(error){
           console.info("Error: ",error);
@@ -57,17 +57,9 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.loginData.password="";
                                 
           $scope.hide($ionicLoading); 
-
-          $scope.usuario={};
-          $scope.usuario.id=respuesta.uid;
-          $scope.usuario.credito=1000;
-          
-          UsuarioService.add($scope.usuario);
-
           var alertPopup = $ionicPopup.alert({
               title: 'Registrado!',
-              template: '<center>Ha obtenido $1000.00 de credito de regalo de bienvenida.'
-              +'<br>Ya puede ingresar con su email y password</center>' 
+              template: 'Ya puede ingresar con su email y password' 
             });
         })
         .catch(function(error){
@@ -101,73 +93,25 @@ angular.module('starter.controllers', ['starter.factories'])
     })
   }
 
-  // function Verificar(){
-  //   $scope.show($ionicLoading);
-  //   firebase.auth().currentUser.sendEmailVerification()
-  //   .then(function(respuesta){
-  //     $scope.hide($ionicLoading);
-  //     console.info("Respuesta: ", respuesta);
-  //     var alertPopup = $ionicPopup.alert({
-  //             title: 'Atencion',
-  //             template: 'Necesita verificar su email. Por favor, revise su correo electronico!' //'Please check your credentials!'
-  //       });
-  //   })
-  //   .catch(function(error){
-  //     $scope.hide($ionicLoading);
-  //     console.info("Error: ",error);
-  //     var alertPopup = $ionicPopup.alert({
-  //             title: 'Error',
-  //             template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
-  //           });
-  //   })
-  // }
-
-  $scope.LoguearGit=function(){
-    var i=0;
-    var provider = new firebase.auth.GithubAuthProvider();
+  function Verificar(){
     $scope.show($ionicLoading);
-    firebase.auth().signInWithPopup(provider)
-    .then(function(result) {
+    firebase.auth().currentUser.sendEmailVerification()
+    .then(function(respuesta){
       $scope.hide($ionicLoading);
-      //console.info(result);
-      // The signed-in user info.
-      var user = result.user;
-      console.info(user);
-      
-      var usuarios=[];
-      $scope.show($ionicLoading);
-      usuarios = UsuarioService.getAll();
-      usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
-        $scope.hide($ionicLoading); 
-      });
-
-      for(i=0;i<usuarios.length;i++)
-      {
-        if(user.uid==usuarios[i].id)
-        {
-          break;
-        }
-      }
-      if(i==usuarios.length)
-      {
-          var usuario={};
-          usuario.id=user.uid;
-          usuario.credito=1000;
-          
-          UsuarioService.add(usuario);
-      }
-      $state.go('app.mostrar');
-
-      // ...
-    }).catch(function(error) {
-          console.info("Error: ",error);
-          $scope.hide($ionicLoading);
-          var alertPopup = $ionicPopup.alert({
+      console.info("Respuesta: ", respuesta);
+      var alertPopup = $ionicPopup.alert({
+              title: 'Atencion',
+              template: 'Necesita verificar su email. Por favor, revise su correo electronico!' //'Please check your credentials!'
+        });
+    })
+    .catch(function(error){
+      $scope.hide($ionicLoading);
+      console.info("Error: ",error);
+      var alertPopup = $ionicPopup.alert({
               title: 'Error',
-              template: 'Error al loguearse con GitHub' //'Please check your credentials!'
+              template: 'Usuario y/o password incorrectos!' //'Please check your credentials!'
             });
-    });
-
+    })
   }
 
   $scope.Logout = function() {
@@ -175,20 +119,63 @@ angular.module('starter.controllers', ['starter.factories'])
     $state.go('login');
   };
 
+  $scope.Mostrar = function(){
+    $state.go('app.misDesafios', {email: firebase.auth().currentUser.email} );
+  }
+
 })
 
-.controller('controlMostrar', function($scope, $state, $ionicLoading, $timeout, DesafioService) {
-  
+.controller('controlMostrar', function($scope, $state, $ionicLoading,$ionicPopup, $timeout, DesafioService, UsuarioService) {
+  $scope.mostrar=false;
+  $scope.todos=true;
+  $scope.titulo="Desafios Vigentes";
   $scope.datos=[];
+  $scope.usuarios=[];
+  var i=0;
   
   $scope.show($ionicLoading);
+  $timeout(function(){
+      $scope.datos = DesafioService.getAll();
 
-  $scope.datos = DesafioService.getAll();
+      $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
+        console.log($scope.datos);
+        $scope.hide($ionicLoading); 
+      });
 
-  $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
-    console.log($scope.datos);
-    $scope.hide($ionicLoading); 
+     },100);
+
+  $scope.show($ionicLoading);
+  $timeout(function(){
+      $scope.usuarios = UsuarioService.getAll();
+
+      $scope.usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
+        console.log($scope.usuarios);
+        $scope.hide($ionicLoading); 
+      });
+
+     },100);
+
+
+  angular.forEach($scope.usuarios, function(value, index){
+    console.log(value);
+    if(value.id==firebase.auth().currentUser.uid)
+    {
+      i=1;
+    }
   });
+  if(i==0)
+  {
+    var usuario={};
+    usuario.id=firebase.auth().currentUser.uid;
+    usuario.credito=1000;
+            
+    UsuarioService.add(usuario);
+
+    var alertPopup = $ionicPopup.alert({
+        title: 'Bienvenido!',
+        template: 'Ha obtenido $1000.00 de credito de regalo por unica vez.' 
+      });
+  }
 
   $scope.mostrarDesafio = function(index){
     // cambia al state de mostrar el desafio pasandole el index
@@ -261,5 +248,39 @@ angular.module('starter.controllers', ['starter.factories'])
 
   //     $state.go('app.mostrar');
   //   }
+})
+
+.controller('controlAceptados', function($scope, $state, $stateParams, UsuarioService, $ionicLoading) {
+
+})
+
+
+.controller('controlMisDesafios', function($scope, $state, $stateParams, DesafioService, $ionicLoading, $timeout) {
+  $scope.email= $stateParams.email;
+  $scope.titulo="Mis Desafios";
+  $scope.mostrar=true;
+  $scope.todos=false;
+
+  $scope.datos=[];
+  
+  $scope.show($ionicLoading);
+  $timeout(function(){
+      $scope.datos = DesafioService.getAll();
+
+      $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
+        console.log($scope.datos);
+        $scope.hide($ionicLoading); 
+      });
+
+     },100);
+
+})
+
+.controller('AutorCtrl', function($scope) {
+  $scope.autor={};
+  $scope.autor.nombre="Maria Eugenia Pereyra";
+  $scope.autor.foto="img/autor.jpg";
+  $scope.autor.email="meugeniape@gmail.com";
+  $scope.autor.github="https://github.com/EugeniaPereyra";
 });
 
