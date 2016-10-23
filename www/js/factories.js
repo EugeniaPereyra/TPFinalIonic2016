@@ -28,6 +28,12 @@ angular.module('starter.factories', ["firebase"])
                         var id = ref.key;
                         console.log("Se agrego el id " + id);
                     });
+                },
+                save: function(index){
+                    arrayDesafios.$save(index).then(function(ref){
+                        var id = ref.key;
+                        console.log("Se modifico el item con id " + id);
+                    })
                 }
 
             };
@@ -51,10 +57,19 @@ angular.module('starter.factories', ["firebase"])
                     return arrayUsuarios[index];
                 },
 
+                getById: function(id){
+                    console.log("Buscando el id " + id);
+                    return arrayUsuarios.$getRecord(id);
+                    //throw new Error("No implementado");
+                },
+
                 add: function(usuario){
-                    arrayUsuarios.$add(usuario).then(function(ref){
-                        var id = ref.key;
-                        console.log("Se agrego el id " + id);
+                    var refUsuarios = firebase.database().ref().child('USUARIOS/' + usuario.id);
+                    refUsuarios.set( { credito: usuario.credito}, function(error){
+                        if (error)
+                            console.log("Error al guardar el usaurio. Detalle: " + error)
+                        else
+                           console.log("Se agrego el usuario " + usuario.id + "a la base de datos."); 
                     });
                 }
             };

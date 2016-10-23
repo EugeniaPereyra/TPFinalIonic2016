@@ -20,10 +20,13 @@
         </div>
       </div>      
       <div class="card">
-        <div class="item item-text-wrap">
-          <label><strong>Ingrese valor de la apuesta:</strong></label><br>
-          <input type="text" ng-model="desafio.valor" style="width: 100%; text-align: center">
+        <label><strong>Ingrese valor de la apuesta:</strong></label><br>
+        <div class="item range">
+          <p>10</p>
+          <input type="range" min="10" max="100" value="10" step="10" ng-model="desafio.valor">
+          <p>100</p>
         </div>
+        <br><strong>{{desafio.valor}}</strong><br>
       </div>
       <div class="card">
         <div class="item item-text-wrap">

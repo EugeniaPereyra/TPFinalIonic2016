@@ -26,14 +26,14 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.loginData.password="";
           $scope.hide($ionicLoading);
 
-          if(firebase.auth().currentUser.emailVerified)
-          {
+          //if(firebase.auth().currentUser.emailVerified)
+          //{
             $state.go('app.mostrar');
-          }
-          else
-          {
-            Verificar();
-          }
+          //}
+          //else
+          //{
+          //  Verificar();
+          //}
         })
         .catch(function(error){
           console.info("Error: ",error);
@@ -123,53 +123,52 @@ angular.module('starter.controllers', ['starter.factories'])
     $state.go('app.misDesafios', {email: firebase.auth().currentUser.email} );
   }
 
+  $scope.Aceptados = function(){
+    $state.go('app.aceptados', {email: firebase.auth().currentUser.email} );
+  }
+  
+  $scope.MostrarDesafios = function(){
+    $state.go('app.mostrar');
+  }
+
+  $scope.NuevoDesafio = function(){
+    $state.go('app.desafio');
+  }
+
+  $scope.Autor = function(){
+    $state.go('app.autor');
+  }
 })
 
 .controller('controlMostrar', function($scope, $state, $ionicLoading,$ionicPopup, $timeout, DesafioService, UsuarioService) {
   $scope.mostrar=false;
+  $scope.aceptados=false;
   $scope.todos=true;
   $scope.titulo="Desafios Vigentes";
   $scope.datos=[];
-  $scope.usuarios=[];
-  var i=0;
+  $scope.usuario = {};
   
   $scope.show($ionicLoading);
-  $timeout(function(){
-      $scope.datos = DesafioService.getAll();
+  $scope.datos = DesafioService.getAll();
 
-      $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
-        console.log($scope.datos);
-        $scope.hide($ionicLoading); 
-      });
-
-     },100);
-
-  $scope.show($ionicLoading);
-  $timeout(function(){
-      $scope.usuarios = UsuarioService.getAll();
-
-      $scope.usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
-        console.log($scope.usuarios);
-        $scope.hide($ionicLoading); 
-      });
-
-     },100);
-
-
-  angular.forEach($scope.usuarios, function(value, index){
-    console.log(value);
-    if(value.id==firebase.auth().currentUser.uid)
-    {
-      i=1;
-    }
+  $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
+    console.log($scope.datos);
+    $scope.hide($ionicLoading); 
   });
-  if(i==0)
+
+  $timeout(function(){
+    $scope.usuario = UsuarioService.getById(firebase.auth().currentUser.uid);
+  },100);
+
+  if(!$scope.usuario)
   {
     var usuario={};
     usuario.id=firebase.auth().currentUser.uid;
     usuario.credito=1000;
-            
-    UsuarioService.add(usuario);
+    
+    $timeout(function() {
+      UsuarioService.add(usuario);
+    }, 100);
 
     var alertPopup = $ionicPopup.alert({
         title: 'Bienvenido!',
@@ -179,9 +178,7 @@ angular.module('starter.controllers', ['starter.factories'])
 
   $scope.mostrarDesafio = function(index){
     // cambia al state de mostrar el desafio pasandole el index
-    //console.log(DesafioService.getByIndex(index));
-    var dato=JSON.stringify(DesafioService.getByIndex(index));
-    $state.go('app.apuesta', {desafio:dato} );
+    $state.go('app.apuesta', {desafio:index} );
   }
 
   $scope.Terminado=function(desafio){
@@ -213,45 +210,75 @@ angular.module('starter.controllers', ['starter.factories'])
     }
 })
 
-.controller('controlApuesta', function($scope, $state, $stateParams, UsuarioService, $ionicLoading) {
-  $scope.desafio=JSON.parse($stateParams.desafio);
+.controller('controlApuesta', function($scope, $ionicPopup, $state, $stateParams, UsuarioService, $ionicLoading, DesafioService) {
+  var index = $stateParams.desafio;
+  
+  $scope.desafio = DesafioService.getByIndex(index)
+  
   $scope.desafio.jugador=firebase.auth().currentUser.email;
   $scope.credito=0;
 
-  $scope.usuarios=[];
+  //$scope.usuarios=[];
+  console.log(firebase.auth().currentUser.uid);
   $scope.show($ionicLoading);
+  $scope.usuario = UsuarioService.getById(firebase.auth().currentUser.uid);
+  console.log(firebase.auth().currentUser.uid);
+  console.log($scope.usuario);
+  
+  $scope.usuarios = [];
   $scope.usuarios = UsuarioService.getAll();
   $scope.usuarios.$loaded(function() { //espera a que finalice la llamada a firebase
     console.log($scope.usuarios);
     $scope.hide($ionicLoading); 
   });
 
+  //$scope.credito=$scope.usuario.credito;
   //console.log(firebase.auth().currentUser);
-
+/*
   angular.forEach($scope.usuarios, function(value, index){
-    console.log(value);
+    //console.log(value);
     if(value.id==firebase.auth().currentUser.uid)
     {
       $scope.credito=value.credito;
     }
   });
+*/
 
-// ACA MODIFICAR LAS COSAS DESAFIO Y USUARIO
-  // $scope.Aceptar=function(){
+  // ACA MODIFICAR LAS COSAS DESAFIO Y USUARIO
+  $scope.Guardar=function(){
+      $scope.desafio.computado = true;
+      DesafioService.save($scope.desafio);
 
-  //     DesafioService.add($scope.desafio);
+      $ionicPopup.alert({
+         title: 'El desafio se ha guardado correctamente',
+         okType: 'button-balanced'
+      });
 
-  //     $ionicPopup.alert({
-  //        title: 'El desafio se ha guardado correctamente',
-  //        okType: 'button-balanced'
-  //     });
-
-  //     $state.go('app.mostrar');
-  //   }
+      $state.go('app.mostrar');
+  }
 })
 
-.controller('controlAceptados', function($scope, $state, $stateParams, UsuarioService, $ionicLoading) {
 
+//1477005223306
+
+.controller('controlAceptados', function($scope, $state, $stateParams, DesafioService, $ionicLoading, $timeout) {
+  $scope.mostrar=false;
+  $scope.aceptados=true;
+  $scope.todos=false;
+  $scope.titulo="Desafios Aceptados";
+  $scope.email= $stateParams.email;
+  $scope.datos=[];
+  
+  $scope.show($ionicLoading);
+  $timeout(function(){
+      $scope.datos = DesafioService.getAll();
+
+      $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
+        console.log($scope.datos);
+        $scope.hide($ionicLoading); 
+      });
+
+     },100);
 })
 
 
@@ -260,6 +287,7 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.titulo="Mis Desafios";
   $scope.mostrar=true;
   $scope.todos=false;
+  $scope.aceptados=false;
 
   $scope.datos=[];
   

@@ -2,24 +2,41 @@
   <ion-content>
   <center>
 
-      <ion-list ng-show="todos">
-        <div ng-repeat="desafio in datos">
+      <ion-list ng-if="todos">
+        <div ng-repeat="desafio in datos" >
             <div ng-show="desafio.disponible">
               <br>
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
                   <h3>{{desafio.valor | currency}}</h3><br>
-                  Finaliza en:
-                  <timer autostart="false" countdown="(desafio.fechaFin - desafio.fechaInicio)" interval="1000" finish-callback="Terminado(desafio)">{{days}} day{{daysS}}, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds</timer>
+                  <div class='wrap'>
+                    <div class='time-to'>
+                      Finaliza en... {{desafio.fechaFin | date:'medium'}}
+                      <span countdown='' date='{{desafio.fechaFin | date: "medium"}}'>&nbsp;</span>
+                    </div>
+                  </div>
               </ion-item>
               <br>
             </div>
         </div>
        </ion-list>
 
-       <ion-list ng-show="mostrar">
+       <ion-list ng-if="mostrar">
         <div ng-repeat="desafio in datos">
             <div ng-if="desafio.creador == email">
+              <br>
+              <ion-item ng-click="mostrarDesafio($index)">
+                  <h2><strong>{{desafio.pregunta}}</strong></h2><br>
+                  <h3>{{desafio.valor | currency}}</h3><br>
+              </ion-item>
+              <br>
+            </div>
+        </div>
+       </ion-list>
+
+       <ion-list ng-if="aceptados">
+        <div ng-repeat="desafio in datos">
+            <div ng-if="desafio.jugador == email">
               <br>
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
