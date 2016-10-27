@@ -1,8 +1,3 @@
-/*
-var query = ref.orderByChild('users').equalTo(userid);
-var syncArray = $firebaseArray(query);
-*/
-//app
 angular.module('starter.factories', ["firebase"])
     //Service
     .service('DesafioService', ["$firebaseArray", 
@@ -12,10 +7,6 @@ angular.module('starter.factories', ["firebase"])
 
             return {
                 getAll: function(){
-                    if(arrayDesafios == undefined || arrayDesafios == null){
-                        ref = firebase.database().ref('DESAFIOS/');
-                        arrayDesafios = $firebaseArray(ref);
-                    }
                     return arrayDesafios;
                 },
 
@@ -46,10 +37,6 @@ angular.module('starter.factories', ["firebase"])
 
             return {
                 getAll: function(){
-                    if(arrayUsuarios == undefined || arrayUsuarios == null){
-                        ref = firebase.database().ref('USUARIOS/');
-                        arrayUsuarios = $firebaseArray(ref);
-                    }
                     return arrayUsuarios;
                 },
 
@@ -58,19 +45,23 @@ angular.module('starter.factories', ["firebase"])
                 },
 
                 getById: function(id){
-                    console.log("Buscando el id " + id);
                     return arrayUsuarios.$getRecord(id);
-                    //throw new Error("No implementado");
                 },
 
                 add: function(usuario){
                     var refUsuarios = firebase.database().ref().child('USUARIOS/' + usuario.id);
-                    refUsuarios.set( { credito: usuario.credito}, function(error){
+                    refUsuarios.set( { credito: usuario.credito, primerInicio: usuario.primerInicio }, function(error){
                         if (error)
                             console.log("Error al guardar el usaurio. Detalle: " + error)
                         else
-                           console.log("Se agrego el usuario " + usuario.id + "a la base de datos."); 
+                            console.log("Se agrego el usuario " + usuario.id + "a la base de datos."); 
                     });
+                },
+                save: function(index){
+                    arrayUsuarios.$save(index).then(function(ref){
+                        var id = ref.key;
+                        console.log("Se modifico el usuario con id " + id);
+                    })
                 }
             };
         }]);
