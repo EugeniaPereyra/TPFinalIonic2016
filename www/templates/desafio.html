@@ -1,4 +1,4 @@
-<ion-view view-title="Nuevo Desafio" class="pagina">
+<ion-view view-title="Nuevo Desafio" class="pagina" >
   <ion-content>
   <center>
     <div class="item">
@@ -8,17 +8,7 @@
           <textarea ng-model="desafio.pregunta" style="width: 100%; text-align: center">
           </textarea>
         </div>
-      </div>      
-      <div class="card">
-        <div class="item item-text-wrap">
-        <label><strong>Ingrese respuesta A:</strong></label><br>
-          <input type="text" ng-model="desafio.respuestaA" style="width: 100%; text-align: center">
-        </div>
-        <div class="item item-text-wrap">
-          <label><strong>Ingrese respuesta B:</strong></label><br>
-          <input type="text" ng-model="desafio.respuestaB" style="width: 100%; text-align: center">
-        </div>
-      </div>      
+      </div>           
       <div class="card">
         <div class="item item-text-wrap">
           <label><strong>Ingrese valor de la apuesta:</strong></label><br>
@@ -49,7 +39,7 @@
       
     
       <button class="button button-large button-outline button-balanced" ng-click="Aceptar()">
-        Aceptar
+        Crear
       </button>
 
     </div>

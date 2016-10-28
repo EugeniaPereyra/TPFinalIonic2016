@@ -40,6 +40,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
 
     .state('app.mostrar', {
     url: '/mostrar',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/mostrar.html',
@@ -70,6 +71,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
 
     .state('app.aceptados', {
     url: '/aceptados/:email',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/mostrar.html',
@@ -80,6 +82,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
 
     .state('app.misDesafios', {
     url: '/misDesafios/:email',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/mostrar.html',

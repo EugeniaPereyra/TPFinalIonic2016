@@ -10,29 +10,30 @@
           </div>
         </div>  
         <div class="card">
-          <div class="item item-text-wrap">
-            <ion-item  ng-model="desafio.respuestaA" >
-            <label>{{desafio.respuestaA}}</label>
+          <div class="item item-text-wrap" ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaA }" >
+            <ion-item  ng-model="desafio.respuestaA" ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaA }" ng-click="desafio.respuestaElegida = desafio.respuestaA">
+              <label>{{desafio.respuestaA}}</label>
             </ion-item>
           </div>
         </div>
         <div class="card">
-          <div class="item item-text-wrap">
-            <ion-item  ng-model="desafio.respuestaB" >
-            <label>{{desafio.respuestaB}}</label>
+          <div class="item item-text-wrap"  ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaB }" >
+            <ion-item  ng-model="desafio.respuestaB" ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaB }" ng-click="desafio.respuestaElegida = desafio.respuestaB">
+              <label>{{desafio.respuestaB}}</label>
             </ion-item>
           </div>
         </div>
 
         <div class="card">
           <div class="item item-text-wrap">
-            <ion-item  ng-model="credito" ><label>Tu credito disponible es: {{credito | currency}}</label>
+            <ion-item  ng-model="credito">
+              <label>Tu credito disponible es: {{credito | currency}}</label>
             </ion-item>
           </div>
         </div>
 
         <button class="button button-large button-outline button-balanced" ng-click="Guardar()">
-          Modificar
+          Aceptar Desafío
         </button>
 
     </div>

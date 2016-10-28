@@ -1,16 +1,16 @@
-<ion-view view-title="{{titulo}}" class="pagina">
+<ion-view view-title="{{titulo}}" class="pagina" >
   <ion-content>
   <center>
 
       <ion-list ng-show="todos">
         <div ng-repeat="desafio in datos">
-            <div ng-show="desafio.disponible">
+            <div ng-show="desafio.disponible && desafio.creador != email">
               <br>
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
                   <h3>{{desafio.valor | currency}}</h3><br>
                   Finaliza en:
-                  <timer countdown="(desafio.fechaFin - desafio.fechaInicio) / 1000" interval="1000" finish-callback="Terminado(desafio)">{{days}} day{{daysS}}, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds</timer>
+                  <timer countdown="(desafio.fechaFin - DateNow) / 1000" interval="1000" finish-callback="Terminado(desafio)">{{days}} day{{daysS}}, {{hours}} hours, {{minutes}} minutes, {{seconds}} seconds</timer>
               </ion-item>
               <br>
             </div>
@@ -24,6 +24,8 @@
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
                   <h3>{{desafio.valor | currency}}</h3><br>
+                  Finaliza en:
+                  <timer countdown="(desafio.fechaFin - DateNow) / 1000" interval="1000" finish-callback="Terminado(desafio)">{{days}} días, {{hours}} horas, {{minutes}} minutos, {{seconds}} segundos</timer>
               </ion-item>
               <br>
             </div>
@@ -37,6 +39,8 @@
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
                   <h3>{{desafio.valor | currency}}</h3><br>
+                  Finaliza en:
+                  <timer countdown="(desafio.fechaFin - DateNow) / 1000" interval="1000" finish-callback="Terminado(desafio)">{{days}} días, {{hours}} horas, {{minutes}} minutos, {{seconds}} segundos</timer>
               </ion-item>
               <br>
             </div>
