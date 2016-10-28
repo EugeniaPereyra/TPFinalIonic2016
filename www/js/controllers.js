@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['starter.factories'])
 
-.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, $timeout, DesafioService) {
+.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, $timeout, UsuarioService) {
 
   $scope.showLoading = function() {
     $ionicLoading.show({
@@ -71,7 +71,7 @@ angular.module('starter.controllers', ['starter.factories'])
           usuario.primerInicio = true;
           
           $timeout(function() {
-            DesafioService.cargarUsuario(usuario);
+            UsuarioService.add(usuario);
           }, 100);
 
           $scope.hideLoading(); 
@@ -140,7 +140,7 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-.controller('controlMostrar', function($scope, $state, $ionicPopup, $timeout, DesafioService) {
+.controller('controlMostrar', function($scope, $state, $ionicPopup, $timeout, DesafioService, UsuarioService) {
   $scope.mostrar=false;
   $scope.aceptados=false;
   $scope.todos=true;
@@ -154,8 +154,8 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.showLoading();
   $timeout(function(){
     var id = firebase.auth().currentUser.uid;
-    DesafioService.getUsuarios();
-    //DesafioService.getDesafios(callback, error);
+    $scope.usuario = UsuarioService.getById(id);
+    $scope.datos = DesafioService.getAll();
 
     console.log("firebase: " + $scope.datos);
     
@@ -165,7 +165,7 @@ angular.module('starter.controllers', ['starter.factories'])
     {
       $scope.showPopup('Bienvenido!', 'Ha obtenido $1000.00 de credito de regalo por unica vez.');
       $scope.usuario.primerInicio = false;
-     // UsuarioService.save($scope.usuario);
+      UsuarioService.save($scope.usuario);
     }
     $scope.hideLoading();
 
@@ -187,14 +187,14 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-.controller('controlDesafio', function($scope, $ionicPopup, $state, $stateParams, $timeout, DesafioService) {
+.controller('controlDesafio', function($scope, $ionicPopup, $state, $stateParams, $timeout, DesafioService, UsuarioService) {
   $scope.usuario = {};
   $scope.desafio = {};
   $scope.desafio.creador = firebase.auth().currentUser.email;
   $scope.desafio.disponible=true;
   $scope.desafio.computado=false;
   $scope.desafio.jugador="";
-  $scope.desafio.respuestaElegida = "";
+  //$scope.desafio.respuestaElegida = "";
   
   
   $scope.arrayDias = Array.from(Array(7).keys()); 
@@ -226,44 +226,35 @@ angular.module('starter.controllers', ['starter.factories'])
       $scope.desafio.fechaFin = fechaFin.getTime();
 
       $timeout(function(){
-          //$scope.usuarios = UsuarioService.getAll();
-          //$scope.usuario = UsuarioService.getById(firebase.auth().currentUser.uid);
+          $scope.usuarios = UsuarioService.getAll();
+          var id = firebase.auth().currentUser.uid;
+          $scope.usuario = UsuarioService.getById(id);
 
           console.log($scope.usuario);
 
           if($scope.usuario.credito < $scope.desafio.valor)
           {
             $scope.showPopup('Saldo Insuficiente', 'No posee el crédito suficiente para crear un desafío por el valor ingresado.');
-            /*
-            var alertPopup = $ionicPopup.alert({
-                title: 'Saldo Insuficiente',
-                template: 'No posee el crédito suficiente para crear un desafío por el valor ingresado.' 
-              });
-            */
             return;
           }
 
-          //DesafioService.add($scope.desafio);
+          DesafioService.add($scope.desafio);
 
           $scope.showPopup('El desafio se ha guardado correctamente', '', 'button-balanced');
-          /*
-          $ionicPopup.alert({
-             title: 'El desafio se ha guardado correctamente',
-             okType: 'button-balanced'
-          });
-          */
+
           $state.go('app.mostrar');
       }, 100);
     }
 })
 
-.controller('controlApuesta', function($scope, $ionicPopup, $state, $stateParams, DesafioService, $timeout) {
+.controller('controlApuesta', function($scope, $ionicPopup, $state, $stateParams, DesafioService, $timeout, UsuarioService) {
   var index = $stateParams.desafio;
   $scope.usuario = {};
   $scope.credito=0;
 
   $scope.desafio = DesafioService.getByIndex(index)
-  //$scope.usuario = UsuarioService.getById(firebase.auth().currentUser.uid);
+  var id = firebase.auth().currentUser.uid;
+  $scope.usuario = UsuarioService.getById(id);
   
   if($scope.usuario)
     $scope.credito = $scope.usuario.credito;
@@ -271,14 +262,6 @@ angular.module('starter.controllers', ['starter.factories'])
   // Esta validacion no va a estar cuando se permita que un desafio sea aceptado por mas de 1 usuario
   if ($scope.desafio.jugador != "" && $scope.desafio.jugador != $scope.usuario.$id){
     $scope.showPopup('Desafio no disponible', 'El desafío ya ha sido aceptado por otro usuario.');
-    /*
-    var alertPopup = $ionicPopup.alert({
-        title: 'Desafio no disponible',
-        template: 'El desafío ya ha sido aceptado por otro usuario.' 
-      });
-    */
-
-    //return;
     $state.go('app.mostrar');
   }
 
@@ -286,38 +269,23 @@ angular.module('starter.controllers', ['starter.factories'])
       $scope.desafio.vigente = false;
       $scope.desafio.jugador = $scope.usuario.$id;
       
-      if (!$scope.desafio.respuestaElegida){
-        $scope.showPopup('Elija una respuesta', 'Debe elegir una de las respuestas disponibles.');
-        /*
-        var alertPopup = $ionicPopup.alert({
-            title: 'Elija una respuesta',
-            template: 'Debe elegir una de las respuestas disponibles.' 
-          });*/
+      // if (!$scope.desafio.respuestaElegida){
+      //   $scope.showPopup('Elija una respuesta', 'Debe elegir una de las respuestas disponibles.');
 
-        return;
-      }
+      //   return;
+      // }
 
       if($scope.usuario.credito < $scope.desafio.valor){
         $scope.showPopup('Saldo Insuficiente', 'No posee el crédito suficiente para aceptar este desafío.');
-        /*
-        var alertPopup = $ionicPopup.alert({
-            title: 'Saldo Insuficiente',
-            template: 'No posee el crédito suficiente para aceptar este desafío.' 
-          });*/
 
-        $scope.desafio.respuestaElegida = "";
+        //$scope.desafio.respuestaElegida = "";
         return;
       }
 
       $timeout(function(){
-        //DesafioService.save($scope.desafio);
+        DesafioService.save($scope.desafio);
 
         $scope.showPopup('El desafio ha sido aceptado. El jugador que creó el desafío decidirá quién es el ganador.', '', 'button-balanced');
-        /*
-        $ionicPopup.alert({
-           title: 'El desafio ha sido aceptado. El jugador que creó el desafío decidirá quién es el ganador.',
-           okType: 'button-balanced'
-        });*/
 
         $state.go('app.mostrar');
       }, 100);
@@ -331,10 +299,11 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.titulo="Desafios Aceptados";
   $scope.email= $stateParams.email;
   $scope.datos=[];
+  $scope.DateNow = new Date().getTime();
   
   $scope.showLoading();
   $timeout(function(){
-      //$scope.datos = DesafioService.getAll();
+      $scope.datos = DesafioService.getAll();
 
       $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
         console.log($scope.datos);
@@ -351,12 +320,13 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.mostrar=true;
   $scope.todos=false;
   $scope.aceptados=false;
+  $scope.DateNow = new Date().getTime();
 
   $scope.datos=[];
   
   $scope.showLoading();
   $timeout(function(){
-      //$scope.datos = DesafioService.getAll();
+      $scope.datos = DesafioService.getAll();
 
       $scope.datos.$loaded(function() { //espera a que finalice la llamada a firebase
         console.log($scope.datos);
