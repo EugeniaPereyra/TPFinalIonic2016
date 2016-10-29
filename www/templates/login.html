@@ -1,5 +1,5 @@
 <ion-view class="login">
-  <ion-header-bar>
+  <ion-header-bar class="bar-balanced">
     <h1 class="title">Login</h1>
   </ion-header-bar>
   <ion-content>
@@ -21,30 +21,15 @@
           </div>
         </label>
       </div>
-      <center>
-      <div class="padding">
-        <button class="button button-positive" ng-click="Loguear()" ng-disabled="formLogin.$invalid"><ion-icon class="ion-log-in"> Entrar con Email y Password</button>
-      </div>
-      <div class="padding">
-        <button class="button button-balanced" ng-click="Resetear()" ng-disabled="formLogin.$invalid"><ion-icon class="ion-help-circled"> Resetear password
-        </button>
-      </div>   
-      </center>
-
     </form>
+
     <br>
     <center>
-    <label class="item item-input item-stacked-label">
-    <div class="padding">
-      <button class="button button-royal" ng-click="Crear()"><ion-icon class="ion-plus-circled">
-        Crear nueva cuenta
-      </button>
-    </div>
-    </label>
+      <button class="button button-positive" ng-click="Loguear()" ng-disabled="formLogin.$invalid" style="width: 300px"><ion-icon class="ion-log-in"> Entrar con Email y Password</button>
+      <br><br>
+      <button class="button button-balanced" ng-click="Resetear()" ng-disabled="formLogin.$invalid" style="width: 300px"><ion-icon class="ion-help-circled"> Resetear password </button>
+      <br><br>
+      <button class="button button-royal" ng-click="Crear()" style="width: 300px"><ion-icon class="ion-plus-circled"> Crear nueva cuenta</button>
     </center>
-  </ion-refresher>
-
   </ion-content>
-
 </ion-view>
-
