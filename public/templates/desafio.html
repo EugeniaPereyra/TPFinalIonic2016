@@ -1,0 +1,48 @@
+<ion-view view-title="Nuevo Desafio" class="pagina" >
+  <ion-content>
+  <center>
+    <div class="item">
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Ingrese desafio:</strong></label><br>
+          <textarea ng-model="desafio.pregunta" style="width: 100%; text-align: center">
+          </textarea>
+        </div>
+      </div>           
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Ingrese valor de la apuesta:</strong></label><br>
+          <input type="text" ng-model="desafio.valor" style="width: 100%; text-align: center">
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Seleccione la vigencia del desafío:</strong></label><br>
+          <div style="width: 100%">
+            <label>Dias:</label>
+            <select ng-model="tiempo.dias" ng-options="item for item in arrayDias">
+            </select>
+            <label>Horas:</label>
+            <select ng-model="tiempo.horas" ng-options="item for item in arrayHoras">
+            </select>
+            <label>Min:</label>
+            <select ng-model="tiempo.minutos" ng-options="item for item in arrayMinutos">
+            </select>
+            <label>Seg:</label>
+            <select ng-model="tiempo.segundos" ng-options="item for item in arraySegundos">
+            </select>
+          </div>
+        </div>
+      </div>
+      <br>
+      
+    
+      <button class="button button-large button-outline button-balanced" ng-click="Aceptar()">
+        Crear
+      </button>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>

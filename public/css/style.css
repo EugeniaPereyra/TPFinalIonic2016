@@ -1,0 +1,50 @@
+/* Empty. Add your own CSS if you like */
+.ng-hide-add         { animation:0.5s fadeOutUp ease; }
+
+/* when showing the picture */
+.ng-hide-remove      { animation:0.5s fadeInDown ease; }
+
+
+.login {
+    background-color: #F5DA81;
+}
+
+.pagina{
+	background-color: #F2F5A9;
+}
+
+.autor{
+    background-color: #F5A9D0;
+}
+
+.side{
+	background-color: #BEF781;
+}
+
+h2{
+        color:darkblue;
+        text-align: center;
+}
+
+h4{
+        text-align: center;
+}
+
+p{
+        color:darkblue;
+        text-align: center;
+        font-size: 16px;
+}
+
+ion-icon{
+    color:black;
+    font-size: 20px;
+}
+
+.elegido {
+    background-color: green;
+}
+
+.elegido.activated {
+    background-color: green;
+}

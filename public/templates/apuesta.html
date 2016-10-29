@@ -1,0 +1,42 @@
+<ion-view view-title="Apuesta por {{desafio.valor | currency}}" class="pagina">
+  <ion-content>
+    <center>
+      <div class="item">
+
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="desafio.pregunta" ><label>{{desafio.pregunta}}</label>
+            </ion-item>
+          </div>
+        </div>  
+<!--         <div class="card">
+          <div class="item item-text-wrap" ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaA }" >
+            <ion-item  ng-model="desafio.respuestaA" ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaA }" ng-click="desafio.respuestaElegida = desafio.respuestaA">
+              <label>{{desafio.respuestaA}}</label>
+            </ion-item>
+          </div>
+        </div>
+        <div class="card">
+          <div class="item item-text-wrap"  ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaB }" >
+            <ion-item  ng-model="desafio.respuestaB" ng-class="{ elegido: desafio.respuestaElegida == desafio.respuestaB }" ng-click="desafio.respuestaElegida = desafio.respuestaB">
+              <label>{{desafio.respuestaB}}</label>
+            </ion-item>
+          </div>
+        </div> -->
+
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="credito">
+              <label>Tu credito disponible es: {{credito | currency}}</label>
+            </ion-item>
+          </div>
+        </div>
+
+        <button class="button button-large button-outline button-balanced" ng-click="Guardar()">
+          Aceptar Desafio
+        </button>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>
