@@ -152,20 +152,14 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.showLoading();
 
   DesafioService.getAll().then(function(respuesta){
-    console.info("desafios:" +respuesta);
     $scope.datos = respuesta;
+    console.info($scope.datos);
   },function(error){
     console.log(error);
   })
 
-  UsuarioService.getAll().then(function(respuesta){
-    console.info(respuesta);
-  },function(error){
-      console.log(error);
-    });
-
   UsuarioService.getById($scope.userID).then(function(respuesta){
-      console.info("suaurio:"+respuesta);
+      console.info("usuario:"+respuesta);
       $scope.usuario=respuesta;
       if($scope.usuario.primerInicio)
       {
@@ -185,7 +179,8 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 
   $scope.Terminado=function(desafio){
-    desafio.disponible=false;
+      desafio.disponible=false;
+      DesafioService.save(desafio);
   }
 })
 
@@ -239,7 +234,9 @@ angular.module('starter.controllers', ['starter.factories'])
 
         DesafioService.add($scope.desafio);
         console.log("Desafio agregado");
-      },function(error){});
+      },function(error){
+        console.log(error);
+      });
 
       $scope.showPopup('El desafio se ha guardado correctamente', '', 'button-balanced');
 
@@ -259,14 +256,18 @@ angular.module('starter.controllers', ['starter.factories'])
       $scope.showPopup('Desafio no disponible', 'El desafío ya ha sido aceptado por otro usuario.');
       $state.go('app.mostrar');
     }
-  },function(error){});
+  },function(error){
+    console.log(error);
+  });
 
   var id = firebase.auth().currentUser.uid;
   UsuarioService.getById(id).then(function(respuesta){
     $scope.usuario=respuesta;
     if($scope.usuario)
       $scope.credito = $scope.usuario.credito;
-  },function(error){});
+  },function(error){
+    console.log(error);
+  });
 
   $scope.Guardar=function(){
       $scope.desafio.jugador = $scope.usuario.$id;
@@ -298,7 +299,14 @@ angular.module('starter.controllers', ['starter.factories'])
   DesafioService.getAll().then(function(respuesta){
     $scope.datos=respuesta;
     $scope.hideLoading(); 
-  },function(error){});
+  },function(error){
+    console.log(error);
+  });
+
+  $scope.Terminado=function(desafio){
+      desafio.disponible=false;
+      DesafioService.save(desafio);
+  }
 })
 
 
@@ -316,7 +324,14 @@ angular.module('starter.controllers', ['starter.factories'])
   DesafioService.getAll().then(function(respuesta){
     $scope.datos=respuesta;
     $scope.hideLoading(); 
-  },function(error){});
+  },function(error){
+    console.log(error);
+  });
+
+  $scope.Terminado=function(desafio){
+      desafio.disponible=false;
+      DesafioService.save(desafio);
+  }
 })
 
 .controller('AutorCtrl', function($scope) {
