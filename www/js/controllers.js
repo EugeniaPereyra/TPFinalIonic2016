@@ -115,6 +115,21 @@ angular.module('starter.controllers', ['starter.factories'])
     })
   }
 
+  $scope.Administrador=function(){
+    $scope.loginData.username="admin@admin.com";
+    $scope.loginData.password="123456";
+  }
+
+  $scope.JugadorUno=function(){
+    $scope.loginData.username="pepe@pepe.com";
+    $scope.loginData.password="123456";
+  }
+
+  $scope.JugadorDos=function(){
+    $scope.loginData.username="euge@euge.com";
+    $scope.loginData.password="123456";
+  }
+
 })
 
 .controller('controlMostrar', function($scope, $state, $ionicPopup, $timeout, DesafioService, UsuarioService) {

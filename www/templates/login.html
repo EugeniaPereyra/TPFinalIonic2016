@@ -3,23 +3,23 @@
     <h1 class="title">Login</h1>
   </ion-header-bar>
   <ion-content class="login-container">
-    <section>
+    <section >
       <div class="col header text-center">
          <img ng-src="img/brain-2.png"/>
       </div>
-      <div class="col">
+      <div class="col" >
         <form name="formLogin" novalidate>
           <div class="list">
             <label class="item item-input item-stacked-label">
               <span class="input-label">Email</span>
-              <input type="email" placeholder="yo@gmail.com" name="username" ng-model="loginData.username" required>
+              <input type="email" placeholder="Ingrese su email" name="username" ng-model="loginData.username" required>
               <div style="color: red" ng-show="formLogin.username.$invalid && formLogin.username.$touched">
                 <i class="ion-android-warning"></i> Email requerido
               </div>
             </label>
             <label class="item item-input item-stacked-label">
               <span class="input-label">Password</span>
-              <input type="password" placeholder="miClaveSECRETA" name="password" ng-model="loginData.password" required>
+              <input type="password" placeholder="Ingrese su password" name="password" ng-model="loginData.password" required>
               <div style="color: red" ng-show="formLogin.password.$invalid && formLogin.password.$touched">
                 <i class="ion-android-warning"></i> Password requerido
               </div>
@@ -39,5 +39,11 @@
         <button class="button button-balanced" ng-click="Crear()">Crear cuenta</button>
       </div>
     </section>
+    <br/>
+    <center>
+    <button class="button button-assertive" style="width: 200px" ng-click="Administrador()"><i class="ion-android-contact"></i> Administrador</button>
+    <button class="button button-assertive" style="width: 200px" ng-click="JugadorUno()"><i class="ion-android-contact"></i> Jugador 1</button>
+    <button class="button button-assertive" style="width: 200px" ng-click="JugadorDos()"><i class="ion-android-contact"></i> Jugador 2</button>
+    </center>
   </ion-content>
 </ion-view>
