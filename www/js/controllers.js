@@ -323,6 +323,21 @@ angular.module('starter.controllers', ['starter.factories'])
     }
 })
 
+.controller('controlPerfil', function($scope, $state, UsuarioService) {
+  $scope.usuario = {};
+  $scope.showLoading();
+
+  var id = firebase.auth().currentUser.uid;
+  UsuarioService.getById(id).then(function(respuesta){
+    $scope.usuario = respuesta;
+    $scope.usuario.mail = firebase.auth().currentUser.email;
+    $scope.hideLoading(); 
+  },function(error){
+    console.log(error);
+  });
+  
+})
+
 .controller('AutorCtrl', function($scope) {
   $scope.autor={};
   $scope.autor.nombre="Maria Eugenia Pereyra";

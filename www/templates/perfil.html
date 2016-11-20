@@ -1,10 +1,10 @@
-<ion-view view-title="Perfil" class="autor" >
+<ion-view view-title="Perfil" class="pagina">
   <ion-content>
-    <center>
+    <div class="col header text-center">
+		<img ng-src="img/brain-2.png"/>
+  	</div>
     <br>
     <h2>{{usuario.mail}}</h2>
-    <div align="center"><img ng-src="{{usuario.foto}}" width="30%" height="30%"></div>
-    <br>
     <p>Saldo: {{usuario.credito | currency}} </p>
     <br>
     

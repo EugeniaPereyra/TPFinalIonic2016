@@ -108,6 +108,16 @@ angular.module('starter', [
       }
   })
 
+  .state('app.perfil', {
+    url: '/perfil',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/perfil.html',
+        controller: 'controlPerfil'
+      }
+    }
+  })
+
   .state('app.autor', {
     url: '/autor',
     views: {

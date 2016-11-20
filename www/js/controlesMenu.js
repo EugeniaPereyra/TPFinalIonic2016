@@ -54,6 +54,10 @@ angular.module('menu.controllers', [])
     $state.go('app.creditos');
   }
 
+  $scope.Perfil = function(){
+    $state.go('app.perfil');
+  }
+
   $scope.Autor = function(){
     $state.go('app.autor');
   }

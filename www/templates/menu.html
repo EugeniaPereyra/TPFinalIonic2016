@@ -6,35 +6,42 @@
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
         </button> 
       </ion-nav-buttons>
+
+      <ion-nav-buttons side="right">
+        <button class="button button-icon button-clear"  ng-click="Perfil()"><ion-icon class="ion-ios-person-outline" style="font-size: 18px;">
+          Perfil
+        </button>
+      </ion-nav-buttons>
+
     </ion-nav-bar>
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
 
-  <ion-side-menu side="left">
+  <ion-side-menu side="left" class="sidebar-nav">
     <ion-header-bar class="bar-stable bar-balanced"">
       <h1 class="title">Opciones</h1>
     </ion-header-bar>
-    <ion-content style="background-color: #A9F5F2">
+    <ion-content>
       <ion-list>
-        <ion-item menu-close ng-click="Logout()" style="background-color: #A9F5F2"><ion-icon class="ion-log-out" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Logout()"><ion-icon class="ion-log-out" style="font-size: 18px;">
           Desloguear
         </ion-item>
-        <ion-item menu-close ng-click="MostrarDesafios()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-list-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="MostrarDesafios()"><ion-icon class="ion-ios-list-outline" style="font-size: 18px;">
           Desafios
         </ion-item>
-        <ion-item menu-close ng-click="NuevoDesafio()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-compose-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="NuevoDesafio()"><ion-icon class="ion-ios-compose-outline" style="font-size: 18px;">
           Crear Nuevo Desafio
         </ion-item>
-        <ion-item menu-close ng-click="Aceptados()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-checkmark-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Aceptados()"><ion-icon class="ion-ios-checkmark-outline" style="font-size: 18px;">
           Desafios Aceptados
         </ion-item>
-        <ion-item menu-close ng-click="Mostrar()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-folder-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Mostrar()"><ion-icon class="ion-ios-folder-outline" style="font-size: 18px;">
           Mis Desafios
         </ion-item>
-        <ion-item menu-close ng-click="Creditos()" style="background-color: #A9F5F2" ng-show="UsuarioLogueado.email=='admin@admin.com'"><ion-icon class="ion-social-usd-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Creditos()"><ion-icon class="ion-social-usd-outline" style="font-size: 18px;">
           Generar Créditos
         </ion-item>
-        <ion-item menu-close ng-click="Autor()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-information-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Autor()"><ion-icon class="ion-ios-information-outline" style="font-size: 18px;">
           Autor
         </ion-item>
       </ion-list>
