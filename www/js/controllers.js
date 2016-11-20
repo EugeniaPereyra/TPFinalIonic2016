@@ -37,6 +37,8 @@ angular.module('starter.controllers', ['starter.factories'])
           //console.info("Respuesta: ",respuesta);
           $scope.loginData.username="";
           $scope.loginData.password="";
+          $scope.UsuarioLogueado=firebase.auth().currentUser;
+          console.info($scope.UsuarioLogueado.email);
           $scope.hideLoading();
 
           //if(firebase.auth().currentUser.emailVerified)
@@ -113,34 +115,6 @@ angular.module('starter.controllers', ['starter.factories'])
     })
   }
 
-  $scope.Logout = function() {
-    firebase.auth().signOut();
-    $state.go('login');
-  };
-
-  $scope.Mostrar = function(){
-    $state.go('app.misDesafios', {email: firebase.auth().currentUser.email} );
-  }
-
-  $scope.Aceptados = function(){
-    $state.go('app.aceptados', {email: firebase.auth().currentUser.email} );
-  }
-  
-  $scope.MostrarDesafios = function(){
-    $state.go('app.mostrar');
-  }
-
-  $scope.NuevoDesafio = function(){
-    $state.go('app.desafio');
-  }
-
-  $scope.Creditos = function(){
-    $state.go('app.creditos');
-  }
-
-  $scope.Autor = function(){
-    $state.go('app.autor');
-  }
 })
 
 .controller('controlMostrar', function($scope, $state, $ionicPopup, $timeout, DesafioService, UsuarioService) {
@@ -163,7 +137,7 @@ angular.module('starter.controllers', ['starter.factories'])
   })
 
   UsuarioService.getById($scope.userID).then(function(respuesta){
-      console.info("usuario:"+respuesta);
+      //console.info("usuario:"+respuesta);
       $scope.usuario=respuesta;
       if($scope.usuario.primerInicio)
       {
@@ -338,63 +312,14 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-.controller('CreditosCtrl', function($scope) {
-  $scope.usuario = {};
-  $scope.desafio = {};
-  $scope.desafio.creador = firebase.auth().currentUser.uid;
-  $scope.desafio.disponible=true;
-  $scope.desafio.computado=false;
-  $scope.desafio.jugador="";
-  //$scope.desafio.respuestaElegida = "";
-  
-  
-  $scope.arrayDias = Array.from(Array(7).keys()); 
-  $scope.arrayHoras = Array.from(Array(25).keys()); 
-  $scope.arrayMinutos = Array.from(Array(61).keys()); 
-  $scope.arraySegundos = Array.from(Array(61).keys()); 
-
-  $scope.tiempo = { dias: 0, horas: 0, minutos: 0, segundos: 0 };
+.controller('CreditosCtrl', function($scope, CreditoService) {
+  $scope.credito = {}; 
+  $scope.cantidad ={}; 
 
   $scope.Aceptar=function(){
-      var fechaFin;
-      if ($scope.tiempo.dias == 0 && $scope.tiempo.horas == 0 && $scope.tiempo.minutos == 0 && $scope.tiempo.segundos == 0){
-        alert("Debe seleccionar alguno");
-        return false;
-      }
-      else{
-        fechaFin = new Date();
-        if ($scope.tiempo.dias != 0)
-          fechaFin.setDate(fechaFin.getDate() + $scope.tiempo.dias);
-        if ($scope.tiempo.horas != 0)
-          fechaFin.setHours(fechaFin.getHours() + $scope.tiempo.horas);
-        if ($scope.tiempo.minutos != 0)
-          fechaFin.setMinutes(fechaFin.getMinutes() + $scope.tiempo.minutos);
-        if ($scope.tiempo.segundos != 0)
-          fechaFin.setSeconds(fechaFin.getSeconds() + $scope.tiempo.segundos);
-      }
 
-      $scope.desafio.fechaInicio = new Date().getTime(); //firebase.database.ServerValue.TIMESTAMP;
-      $scope.desafio.fechaFin = fechaFin.getTime();
-
-      var id = firebase.auth().currentUser.uid;
-      UsuarioService.getById(id).then(function(respuesta){
-        //console.info(respuesta);
-        $scope.usuario=respuesta;
-        if($scope.usuario.credito < $scope.desafio.valor)
-        {
-          $scope.showPopup('Saldo Insuficiente', 'No posee el crédito suficiente para crear un desafío por el valor ingresado.');
-          return;
-        }
-
-        DesafioService.add($scope.desafio);
-        console.log("Desafio agregado");
-      },function(error){
-        console.log(error);
-      });
-
-      $scope.showPopup('El desafio se ha guardado correctamente', '', 'button-balanced');
-
-      $state.go('app.mostrar');
+        CreditoService.add($scope.cantidad,$scope.credito);
+          $scope.showPopup('Los creditos se han generado correctamente', '', 'button-balanced');       
     }
 })
 

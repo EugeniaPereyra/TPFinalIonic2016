@@ -1,8 +1,6 @@
-<ion-side-menus  class="side">
+<ion-side-menus  class="side" enable-menu-with-back-views="true">
   <ion-side-menu-content>
     <ion-nav-bar class="bar-stable  bar-energized">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
 
        <ion-nav-buttons side="left">
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
@@ -33,7 +31,7 @@
         <ion-item menu-close ng-click="Mostrar()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-folder-outline" style="font-size: 18px;">
           Mis Desafios
         </ion-item>
-        <ion-item menu-close ng-click="Creditos()" style="background-color: #A9F5F2"><ion-icon class="ion-social-usd-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Creditos()" style="background-color: #A9F5F2" ng-show="UsuarioLogueado.email=='admin@admin.com'"><ion-icon class="ion-social-usd-outline" style="font-size: 18px;">
           Generar Créditos
         </ion-item>
         <ion-item menu-close ng-click="Autor()" style="background-color: #A9F5F2"><ion-icon class="ion-ios-information-outline" style="font-size: 18px;">
