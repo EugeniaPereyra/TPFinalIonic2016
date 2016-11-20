@@ -91,6 +91,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
       }
   })
 
+  .state('app.creditos', {
+    url: '/creditos',
+    views: {
+      'menuContent': {
+          templateUrl: 'templates/creditos.html',
+          controller: 'CreditosCtrl'
+        }
+      }
+  })
+
   .state('app.autor', {
     url: '/autor',
     views: {
