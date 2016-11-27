@@ -8,17 +8,22 @@
           <textarea ng-model="desafio.pregunta" style="width: 100%; text-align: center">
           </textarea>
         </div>
-      </div>           
+      </div>   
       <div class="card">
         <div class="item item-text-wrap">
           <label><strong>Ingrese valor de la apuesta:</strong></label><br>
-          <input type="number" ng-model="desafio.valor" style="width: 100%; text-align: center">
+          <div class="item range">
+            <p><strong>10</strong></p>
+            <input type="range" min="10" max="100" value="50" step="10" ng-model="desafio.valor" name="valor">
+            <p><strong>100</strong></p>
+          </div>
+          <br/>
+          <p><strong>{{desafio.valor}}</strong></p>
         </div>
-      </div>
-      
+      </div>      
       <div class="card">
         <div class="item item-text-wrap">
-          <label><strong>Seleccione la vigencia del desafío:</strong></label><br>
+          <label><strong>Seleccione la vigencia del desafio:</strong></label><br>
           <div style="width: 100%">
             <label>Dias:</label>
             <select ng-model="tiempo.dias" ng-options="item for item in arrayDias">
@@ -37,7 +42,6 @@
       </div>
       <br>
       
-    
       <button class="button button-large button-outline button-balanced" ng-click="Aceptar()">
         Crear
       </button>

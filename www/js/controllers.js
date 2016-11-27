@@ -71,6 +71,7 @@ angular.module('starter.controllers', ['starter.factories'])
           usuario.id = respuesta.uid;
           usuario.credito = 1000;
           usuario.primerInicio = true;
+          usuario.nombre = respuesta.email;
           
           UsuarioService.add(usuario);
           console.log("usuario agregado");
@@ -172,8 +173,35 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 
   $scope.Terminado=function(desafio){
-      desafio.disponible=false;
-      DesafioService.save(desafio);
+      if(desafio.jugador=="")
+      {
+          UsuarioService.getById(desafio.creador).then(function(respuesta){
+            //console.info(respuesta);
+            $scope.usuario=respuesta;
+          })
+          console.info($scope.usuario);
+          $scope.usuario.credito += desafio.valor;
+          UsuarioService.save($scope.usuario);
+          desafio.disponible=false;
+          desafio.computado=true;
+          desafio.fechaInicio=0;
+          desafio.fechaFin=0;
+          DesafioService.save(desafio);
+      }
+      if(desafio.jugador)
+      {
+          UsuarioService.getById(desafio.jugador).then(function(respuesta){
+            //console.info(respuesta);
+            $scope.usuario=respuesta;
+          })
+          $scope.usuario.credito += (desafio.valor * 2);
+          UsuarioService.save($scope.usuario);
+          desafio.disponible=false;
+          desafio.computado=true;
+          desafio.fechaInicio=0;
+          desafio.fechaFin=0;
+          DesafioService.save(desafio);
+      }      
   }
 })
 
@@ -184,6 +212,7 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio.disponible=true;
   $scope.desafio.computado=false;
   $scope.desafio.jugador="";
+  $scope.desafio.valor=50;
   //$scope.desafio.respuestaElegida = "";
   
   
@@ -224,7 +253,8 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.showPopup('Saldo Insuficiente', 'No posee el crédito suficiente para crear un desafío por el valor ingresado.');
           return;
         }
-
+        $scope.usuario.credito -= $scope.desafio.valor;
+        UsuarioService.save($scope.usuario);
         DesafioService.add($scope.desafio);
         console.log("Desafio agregado");
       },function(error){
@@ -262,18 +292,18 @@ angular.module('starter.controllers', ['starter.factories'])
     console.log(error);
   });
 
-  $scope.Guardar=function(){
+  $scope.AceptarDesafio=function(){
       $scope.desafio.jugador = $scope.usuario.$id;
       if($scope.usuario.credito < $scope.desafio.valor){
         $scope.showPopup('Saldo Insuficiente', 'No posee el crédito suficiente para aceptar este desafío.');
         //$scope.desafio.respuestaElegida = "";
         return;
       }
-
+      $scope.usuario.credito -= $scope.desafio.valor;
+      UsuarioService.save($scope.usuario);
       DesafioService.save($scope.desafio);
       console.log("Desafio modificado");
       $scope.showPopup('El desafio ha sido aceptado. El jugador que creó el desafío decidirá quién es el ganador.', '', 'button-balanced');
-
       $state.go('app.mostrar');
   }
 })
@@ -350,6 +380,15 @@ angular.module('starter.controllers', ['starter.factories'])
   },function(error){
     console.log(error);
   });
+
+  $scope.Cambiar=function(){
+    UsuarioService.save($scope.usuario);
+    $scope.showPopup('Correcto', 'Se ha cambiado el nombre');
+  }
+
+  $scope.Cargar=function(){
+
+  }
   
 })
 

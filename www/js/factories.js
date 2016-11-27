@@ -94,7 +94,7 @@ angular.module('starter.factories', ["firebase"])
 
             this.add = function(usuario){
                     var refUsuarios = firebase.database().ref().child('USUARIOS/' + usuario.id);
-                    refUsuarios.set( { credito: usuario.credito, primerInicio: usuario.primerInicio }, function(error){
+                    refUsuarios.set( { credito: usuario.credito, primerInicio: usuario.primerInicio, nombre: usuario.nombre }, function(error){
                         if (error)
                             console.log("Error al guardar el usaurio. Detalle: " + error)
                         else
@@ -103,8 +103,9 @@ angular.module('starter.factories', ["firebase"])
                 };
 
             this.save = function(index){
-                    return this.arrayUsuarios.$loaded().then(function(datos){
-                        return datos.$save(index);
+                    this.arrayUsuarios.$save(index).then(function(ref){
+                        var id = ref.key;
+                        console.log("Se modifico el item con id " + id);
                     })
                 };
 
