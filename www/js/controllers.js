@@ -139,6 +139,8 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.todos=true;
   $scope.titulo="Desafios Vigentes";
   $scope.datos=[];
+  var puente=[];
+  var datos = [];
   $scope.usuario = {};
   $scope.DateNow = new Date().getTime();
   $scope.userID = firebase.auth().currentUser.uid;
@@ -146,8 +148,54 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.showLoading();
 
   DesafioService.getAll().then(function(respuesta){
-    $scope.datos = respuesta;
-    console.info($scope.datos);
+    puente = respuesta;
+    datos = puente.map(function(dato){
+      if((dato.fechaFin - $scope.DateNow) / 1000 > 0)
+      {
+        return dato;
+      }
+      else
+      {
+        if(dato.jugador=="" && !dato.computado)
+        {
+            UsuarioService.getById(dato.creador).then(function(respuesta){
+              //console.info(respuesta);
+              $scope.usuario=respuesta;
+              console.info($scope.usuario);
+              $scope.usuario.credito += parseInt(dato.valor);
+              UsuarioService.save($scope.usuario);
+              dato.disponible=false;
+              dato.computado=true;
+              dato.fechaInicio=0;
+              dato.fechaFin=0;
+              DesafioService.save(dato);
+            })
+        }
+        if(dato.jugador && !dato.computado)
+        {
+            UsuarioService.getById(dato.jugador).then(function(respuesta){
+              //console.info(respuesta);
+              $scope.usuario=respuesta;
+              $scope.usuario.credito += (parseInt(dato.valor) * 2);
+              UsuarioService.save($scope.usuario);
+              dato.disponible=false;
+              dato.computado=true;
+              dato.fechaInicio=0;
+              dato.fechaFin=0;
+              DesafioService.save(dato);
+            })
+        } 
+      }
+    })
+    puente = [];
+    for(var i=0;i<datos.length;i++)
+    {
+      if(datos[i]!=undefined)
+      {
+        puente.push(datos[i]);
+      }
+    }
+    $scope.datos=puente;
   },function(error){
     console.log(error);
   })
@@ -173,35 +221,7 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 
   $scope.Terminado=function(desafio){
-      if(desafio.jugador=="")
-      {
-          UsuarioService.getById(desafio.creador).then(function(respuesta){
-            //console.info(respuesta);
-            $scope.usuario=respuesta;
-          })
-          console.info($scope.usuario);
-          $scope.usuario.credito += desafio.valor;
-          UsuarioService.save($scope.usuario);
-          desafio.disponible=false;
-          desafio.computado=true;
-          desafio.fechaInicio=0;
-          desafio.fechaFin=0;
-          DesafioService.save(desafio);
-      }
-      if(desafio.jugador)
-      {
-          UsuarioService.getById(desafio.jugador).then(function(respuesta){
-            //console.info(respuesta);
-            $scope.usuario=respuesta;
-          })
-          $scope.usuario.credito += (desafio.valor * 2);
-          UsuarioService.save($scope.usuario);
-          desafio.disponible=false;
-          desafio.computado=true;
-          desafio.fechaInicio=0;
-          desafio.fechaFin=0;
-          DesafioService.save(desafio);
-      }      
+    $scope.showPopup('Finalizado!', 'Transcurrio el tiempo');     
   }
 })
 

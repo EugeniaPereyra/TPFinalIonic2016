@@ -4,7 +4,7 @@
 
       <ion-list ng-show="todos">
         <div ng-repeat="desafio in datos">
-            <div ng-show="desafio.disponible && desafio.creador != userID">
+            <div ng-show="!desafio.computado && desafio.disponible && desafio.creador != userID">
               <br>
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
@@ -24,6 +24,7 @@
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
                   <h3>{{desafio.valor | currency}}</h3><br>
+                <timer ng-show="desafio.disponible" countdown="(desafio.fechaFin - DateNow) / 1000" interval="1000" finish-callback="Terminado(desafio)">{{days}} dia{{daysS}}, {{hours}} horas, {{minutes}} minutos, {{seconds}} segundos</timer>
               </ion-item>
               <br>
             </div>
@@ -37,6 +38,7 @@
               <ion-item ng-click="mostrarDesafio($index)">
                   <h2><strong>{{desafio.pregunta}}</strong></h2><br>
                   <h3>{{desafio.valor | currency}}</h3><br>
+                <timer ng-show="desafio.sidponible" countdown="(desafio.fechaFin - DateNow) / 1000" interval="1000" finish-callback="Terminado(desafio)">{{days}} dia{{daysS}}, {{hours}} horas, {{minutes}} minutos, {{seconds}} segundos</timer>
               </ion-item>
               <br>
             </div>
