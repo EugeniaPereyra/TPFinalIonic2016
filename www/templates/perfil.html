@@ -1,13 +1,25 @@
 <ion-view view-title="Perfil" class="pagina">
   <ion-content>
+  <center>
   <br/>
     <div class="col header text-center">
 		<img ng-src="img/brain-2.png"/>
   	</div>
     <br/>
-    <h2>{{usuario.mail}}</h2>
-    <p>Saldo: {{usuario.credito | currency}} </p>
-    <br/>
-    
+
+    <div class="list" style="width: 35%">
+        <div class="item item-input-inset">
+        <label>Nombre:</label>
+        <label class="item-input-wrapper">
+          <input type="text" placeholder="{{usuario.nombre}}" ng-model="usuario.nombre">
+        </label>
+        <button class="button button-small button-positive" ng-click="Cambiar()">
+          Cambiar
+        </button>
+      </div>
+    </div>
+    <label style="color: darkblue; font-size: 25px; font-style: bold;">Saldo:&ensp; &ensp; &ensp; {{usuario.credito | currency}}&ensp; &ensp; &ensp;</label><button class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
+
+    </center>
   </ion-content>
 </ion-view>

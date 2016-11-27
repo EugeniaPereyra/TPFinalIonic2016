@@ -110,6 +110,7 @@ angular.module('starter', [
 
   .state('app.perfil', {
     url: '/perfil',
+    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/perfil.html',
