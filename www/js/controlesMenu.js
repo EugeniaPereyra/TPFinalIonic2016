@@ -3,7 +3,10 @@ angular.module('menu.controllers', [])
 .controller('controlMenu', function($scope, $state, $ionicLoading, $ionicPopup) {
 
   $scope.UsuarioLogueado=firebase.auth().currentUser;
-  console.info($scope.UsuarioLogueado.email);
+  if($scope.UsuarioLogueado== null || $scope.UsuarioLogueado == undefined)
+  {
+    $state.go('login');
+  }
 
   $scope.showLoading = function() {
     $ionicLoading.show({
