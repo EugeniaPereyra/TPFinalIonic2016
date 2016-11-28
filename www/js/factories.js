@@ -65,6 +65,18 @@ angular.module('starter.factories', ["firebase"])
                         console.log("Se modifico el item con id " + id);
                     })
                 };
+
+            this.remove = function(index){
+                    this.arrayCreditos.$remove(index).then(function(ref){
+                        console.log("Se elimino credito");
+                    })
+                };
+
+            this.getById = function(id){
+                    return this.arrayCreditos.$loaded().then(function(datos){
+                        return datos.$getRecord(id);
+                    })
+                };
         }])
 
 

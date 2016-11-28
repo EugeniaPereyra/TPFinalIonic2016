@@ -101,34 +101,30 @@ angular.module('starter.controllers', ['starter.factories'])
     })
   }
 
-  function Verificar(){
-    $scope.showLoading();
-    firebase.auth().currentUser.sendEmailVerification()
-    .then(function(respuesta){
-      $scope.hideLoading();
-      console.info("Respuesta: ", respuesta);
-      $scope.showPopup('Atencion', 'Necesita verificar su email. Por favor, revise su correo electronico!');
-    })
-    .catch(function(error){
-      $scope.hideLoading();
-      console.info("Error: ",error);
-      $scope.showPopup('Error', 'Usuario y/o password incorrectos!');
-    })
-  }
+  // function Verificar(){
+  //   $scope.showLoading();
+  //   firebase.auth().currentUser.sendEmailVerification()
+  //   .then(function(respuesta){
+  //     $scope.hideLoading();
+  //     console.info("Respuesta: ", respuesta);
+  //     $scope.showPopup('Atencion', 'Necesita verificar su email. Por favor, revise su correo electronico!');
+  //   })
+  //   .catch(function(error){
+  //     $scope.hideLoading();
+  //     console.info("Error: ",error);
+  //     $scope.showPopup('Error', 'Usuario y/o password incorrectos!');
+  //   })
+  // }
 
   $scope.Administrador=function(){
     $scope.loginData.username="admin@admin.com";
-    $scope.loginData.password="123456";
+    $scope.loginData.password="123123";
   }
 
   $scope.JugadorUno=function(){
-    $scope.loginData.username="pepe@pepe.com";
-    $scope.loginData.password="123456";
   }
 
   $scope.JugadorDos=function(){
-    $scope.loginData.username="euge@euge.com";
-    $scope.loginData.password="123456";
   }
 
 })
@@ -388,6 +384,43 @@ angular.module('starter.controllers', ['starter.factories'])
     }
 })
 
+.controller('controlCargar', function($scope, CreditoService, UsuarioService, $state) {
+  var idCred;
+  var idUsr = firebase.auth().currentUser.uid;
+  $scope.usuario = {};
+  $scope.credito = {};
+  $scope.creditos = {}; 
+  $scope.carga = {};
+  $scope.carga.valor="";
+
+  CreditoService.getAll().then(function(respuesta){
+    $scope.creditos=respuesta;
+    console.log($scope.creditos);
+  })
+
+  $scope.Cargar=function(){        
+        for(var i=0;i<$scope.creditos.length;i++)
+        {
+          if($scope.creditos[i].valor==$scope.carga.valor)
+          {
+            idCred=$scope.creditos[i].$id;
+            break;
+          }
+        }
+        UsuarioService.getById(idUsr).then(function(respuesta){
+          $scope.usuario = respuesta;
+          $scope.usuario.credito += parseInt($scope.carga.valor);
+          UsuarioService.save($scope.usuario); 
+          CreditoService.getById(idCred).then(function(respuesta){
+            $scope.credito=respuesta;
+            CreditoService.remove($scope.credito);
+            $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
+            $state.go('app.perfil');
+            })
+          }) 
+        }  
+})
+
 .controller('controlPerfil', function($scope, $state, UsuarioService) {
   $scope.usuario = {};
   $scope.showLoading();
@@ -407,7 +440,8 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 
   $scope.Cargar=function(){
-
+    var dato = JSON.stringify($scope.usuario);
+    $state.go('app.cargar',{usuario: dato});
   }
   
 })

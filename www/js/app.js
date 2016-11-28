@@ -119,6 +119,17 @@ angular.module('starter', [
     }
   })
 
+  .state('app.cargar', {
+    url: '/cargar',
+    cache: false,
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/cargar.html',
+        controller: 'controlCargar'
+      }
+    }
+  })
+
   .state('app.autor', {
     url: '/autor',
     views: {
