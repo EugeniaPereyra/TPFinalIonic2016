@@ -58,6 +58,7 @@ angular.module('starter', [
 
     .state('app.desafio', {
     url: '/desafio',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/desafio.html',
@@ -68,6 +69,7 @@ angular.module('starter', [
 
     .state('app.apuesta', {
     url: '/apuesta/:desafio',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/apuesta.html',
@@ -100,6 +102,7 @@ angular.module('starter', [
 
   .state('app.creditos', {
     url: '/creditos',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/creditos.html',
