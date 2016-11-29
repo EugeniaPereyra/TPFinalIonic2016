@@ -21,6 +21,12 @@ angular.module('starter.factories', ["firebase"])
                         return datos[index];
                     })
                 };
+
+            this.getById = function(id){
+                    return this.arrayDesafios.$loaded().then(function(datos){
+                        return datos.$getRecord(id);
+                    })
+                };
                 //
             this.add = function(desafio){
                     this.arrayDesafios.$add(desafio).then(function(ref){
@@ -33,6 +39,48 @@ angular.module('starter.factories', ["firebase"])
                     this.arrayDesafios.$save(index).then(function(ref){
                         var id = ref.key;
                         console.log("Se modifico el item con id " + id);
+                    })
+                };
+        }])
+
+    .service('CreditoService', ["$firebaseArray", 
+        function($firebaseArray){
+
+            this.ref = firebase.database().ref('CREDITOS/');
+            this.arrayCreditos = $firebaseArray(this.ref);
+           
+            this.getAll = function(){
+                    return this.arrayCreditos.$loaded().then(function(datos){
+                        return datos;
+                    })
+                };
+
+            this.add = function(cantidad, credito){
+                for(var i=0;i<cantidad.valor;i++)
+                {
+                    this.arrayCreditos.$add(credito).then(function(ref){
+                        var id = ref.key;
+                        console.log("Se agrego el id " + id);
+                    });
+                }
+            };
+            
+            this.save = function(index){
+                    this.arrayCreditos.$save(index).then(function(ref){
+                        var id = ref.key;
+                        console.log("Se modifico el item con id " + id);
+                    })
+                };
+
+            this.remove = function(index){
+                    this.arrayCreditos.$remove(index).then(function(ref){
+                        console.log("Se elimino credito");
+                    })
+                };
+
+            this.getById = function(id){
+                    return this.arrayCreditos.$loaded().then(function(datos){
+                        return datos.$getRecord(id);
                     })
                 };
         }])
@@ -64,7 +112,7 @@ angular.module('starter.factories', ["firebase"])
 
             this.add = function(usuario){
                     var refUsuarios = firebase.database().ref().child('USUARIOS/' + usuario.id);
-                    refUsuarios.set( { credito: usuario.credito, primerInicio: usuario.primerInicio }, function(error){
+                    refUsuarios.set( { credito: usuario.credito, primerInicio: usuario.primerInicio, nombre: usuario.nombre }, function(error){
                         if (error)
                             console.log("Error al guardar el usaurio. Detalle: " + error)
                         else
@@ -75,7 +123,7 @@ angular.module('starter.factories', ["firebase"])
             this.save = function(index){
                     this.arrayUsuarios.$save(index).then(function(ref){
                         var id = ref.key;
-                        console.log("Se modifico el usuario con id " + id);
+                        console.log("Se modifico el item con id " + id);
                     })
                 };
 

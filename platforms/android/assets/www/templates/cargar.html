@@ -1,0 +1,25 @@
+<ion-view view-title="Cargar credito" class="pagina" >
+  <ion-content>
+  <center>   
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Seleccione el valor a cargar:</strong></label><br>
+          <div style="width: 100%">
+            <label>Valor:</label>
+            <select ng-model="carga.valor">
+                  <option value="">Seleccione monto..</option>
+                  <option ng-repeat="v in creditos" value={{v.valor}}>{{v.valor}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <br>
+      
+      <button class="button button-large button-outline button-balanced" ng-click="Cargar()">
+        Cargar
+      </button>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>

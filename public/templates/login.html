@@ -1,50 +1,49 @@
-<ion-view class="login">
-  <ion-header-bar>
+<ion-view >
+  <ion-header-bar class="bar-balanced">
     <h1 class="title">Login</h1>
   </ion-header-bar>
-  <ion-content>
-  
-    <form name="formLogin" novalidate>
-      <div class="list">
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">Email</span>
-          <input type="email" placeholder="yo@gmail.com" name="username" ng-model="loginData.username" required>
-          <div style="color: red" ng-show="formLogin.username.$invalid && formLogin.username.$touched">
-            <i class="ion-android-warning"></i> Email requerido
-          </div>
-        </label>
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">Password</span>
-          <input type="password" placeholder="miClaveSECRETA" name="password" ng-model="loginData.password" required>
-          <div style="color: red" ng-show="formLogin.password.$invalid && formLogin.password.$touched">
-            <i class="ion-android-warning"></i> Password requerido
-          </div>
-        </label>
+  <ion-content class="login-container" scroll="true">
+    <section >
+      <div class="col header text-center">
+         <img src="../img/brain-2.png"/>
       </div>
-      <center>
-      <div class="padding">
-        <button class="button button-positive" ng-click="Loguear()" ng-disabled="formLogin.$invalid"><ion-icon class="ion-log-in"> Entrar con Email y Password</button>
+      <div class="col" >
+        <form name="formLogin" novalidate>
+          <div class="list">
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Email</span>
+              <input type="email" placeholder="Ingrese su email" name="username" ng-model="loginData.username" required>
+              <div style="color: red" ng-show="formLogin.username.$invalid && formLogin.username.$touched">
+                <i class="ion-android-warning"></i> Email requerido
+              </div>
+            </label>
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Password</span>
+              <input type="password" placeholder="Ingrese su password" name="password" ng-model="loginData.password" required>
+              <div style="color: red" ng-show="formLogin.password.$invalid && formLogin.password.$touched">
+                <i class="ion-android-warning"></i> Password requerido
+              </div>
+            </label>
+          </div>
+        </form>
       </div>
-      <div class="padding">
-        <button class="button button-balanced" ng-click="Resetear()" ng-disabled="formLogin.$invalid"><ion-icon class="ion-help-circled"> Resetear password
-        </button>
-      </div>   
-      </center>
+      <br>
 
-    </form>
-    <br>
+      <div class="col text-center">
+        <button class="button button-balanced" ng-click="Loguear()" ng-disabled="formLogin.$invalid"> Entrar </button>
+      </div>
+      <div class="col text-center">
+        <button class="button button-balanced" ng-click="Resetear()" ng-disabled="formLogin.$invalid">Resetear password </button>
+      </div>
+      <div class="col text-center">
+        <button class="button button-balanced" ng-click="Crear()">Crear cuenta</button>
+      </div>
+    </section>
+    <br/>
     <center>
-    <label class="item item-input item-stacked-label">
-    <div class="padding">
-      <button class="button button-royal" ng-click="Crear()"><ion-icon class="ion-plus-circled">
-        Crear nueva cuenta
-      </button>
-    </div>
-    </label>
+    <button class="button button-assertive" style="width: 200px" ng-click="Administrador()"><i class="ion-android-contact"></i> Administrador</button>
+    <button class="button button-assertive" style="width: 200px" ng-click="JugadorUno()"><i class="ion-android-contact"></i> Jugador 1</button>
+    <button class="button button-assertive" style="width: 200px" ng-click="JugadorDos()"><i class="ion-android-contact"></i> Jugador 2</button>
     </center>
-  </ion-refresher>
-
   </ion-content>
-
 </ion-view>
-
