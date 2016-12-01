@@ -1,0 +1,36 @@
+<ion-view view-title="Perfil" class="pagina">
+  <ion-content>
+  <center>
+  <br/>
+    <div class="col header text-center">
+		<img ng-src="../img/brain-2.png"/>
+  	</div>
+    <br/>
+
+    <div class="row" style="width: 75%">
+      <div class="col">
+        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%">Nombre:</label>
+      </div>
+      <div class="col">
+        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%"> {{usuario.nombre}}</label>
+      </div>
+      <div class="col">
+        <button style="width:25%" class="button button-small button-positive" ng-click="Cambiar()">Cambiar</button>
+      </div>
+    </div>
+    <br><br>
+    <div class="row" style="width: 75%">
+      <div class="col">
+        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%">Saldo:</label>
+      </div>
+      <div class="col">
+        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%">{{usuario.credito | currency}}</label>
+      </div>
+      <div class="col">
+        <button style="width:25%" class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
+      </div>
+    </div>
+
+    </center>
+  </ion-content>
+</ion-view>
