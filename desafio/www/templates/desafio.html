@@ -20,26 +20,47 @@
           <br/>
           <p><strong>{{desafio.valor}}</strong></p>
         </div>
-      </div>      
+      </div>   
+
       <div class="card">
-        <div class="item item-text-wrap">
-          <label><strong>Seleccione la vigencia del desafio:</strong></label><br>
-          <div style="width: 100%">
-            <label>Dias:</label>
-            <select ng-model="tiempo.dias" ng-options="item for item in arrayDias">
-            </select>
-            <label>Horas:</label>
-            <select ng-model="tiempo.horas" ng-options="item for item in arrayHoras">
-            </select>
-            <label>Min:</label>
-            <select ng-model="tiempo.minutos" ng-options="item for item in arrayMinutos">
-            </select>
-            <label>Seg:</label>
-            <select ng-model="tiempo.segundos" ng-options="item for item in arraySegundos">
-            </select>
-          </div>
+        <label><strong>Seleccione la vigencia del desafio:</strong></label><br>
+          <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Días 0</strong></p>
+              <input type="range" min="0" max="6" value="0" step="1" ng-model="tiempo.dias">
+              <p><strong>6</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.dias}}</strong></p>
         </div>
-      </div>
+        <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Horas 0</strong></p>
+              <input type="range" min="0" max="23" value="0" step="1" ng-model="tiempo.horas">
+              <p><strong>6</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.horas}}</strong></p>
+        </div>
+        <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Minutos 0</strong></p>
+              <input type="range" min="0" max="59" value="0" step="1" ng-model="tiempo.minutos">
+              <p><strong>6</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.minutos}}</strong></p>
+        </div>
+        <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Segundos 0</strong></p>
+              <input type="range" min="0" max="59" value="0" step="1" ng-model="tiempo.segundos">
+              <p><strong>6</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.segundos}}</strong></p>
+        </div>
+      </div>     
       <br>
       
       <button class="button button-large button-outline button-balanced" ng-click="Aceptar()">

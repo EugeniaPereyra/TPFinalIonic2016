@@ -2,6 +2,9 @@ angular.module('starter.controllers', ['starter.factories'])
 
 .controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, $timeout, UsuarioService) {
 
+  $scope.imagen={};
+  $scope.imagen.foto="brain.png";
+
   $scope.showLoading = function() {
     $ionicLoading.show({
       template: '<ion-spinner icon="android"></ion-spinner>'
@@ -236,7 +239,7 @@ angular.module('starter.controllers', ['starter.factories'])
                                 computado: true,
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
-                                quienGano: desafio.quienGano,
+                                quienGano: desafio.jugador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -256,15 +259,15 @@ angular.module('starter.controllers', ['starter.factories'])
                                 computado: true,
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
-                                quienGano: desafio.quienGano,
+                                quienGano: desafio.creador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
                               }, function(error){
                                 console.log(error); 
-                              }); 
-                    })
-                  }
+                            }); 
+                  })
+                 }
                })
             }
             if(desafio.quienGano != "")
@@ -435,7 +438,7 @@ angular.module('starter.controllers', ['starter.factories'])
         });
     }); 
 
-  function Computar(desafio, id){
+    function Computar(desafio, id){
     // NO COMPUTADOS
     if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
         // NO FUE ACEPTADO
@@ -492,7 +495,7 @@ angular.module('starter.controllers', ['starter.factories'])
                                 computado: true,
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
-                                quienGano: desafio.quienGano,
+                                quienGano: desafio.jugador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -512,7 +515,7 @@ angular.module('starter.controllers', ['starter.factories'])
                                 computado: true,
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
-                                quienGano: desafio.quienGano,
+                                quienGano: desafio.creador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -550,7 +553,6 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.aceptados=false;
   $scope.DateNow = new Date().getTime();
   $scope.datos=[];
-  var desafios=[];
 
    var refDesafio = firebase.database().ref('DESAFIOS/');
     refDesafio.on('child_added', function(snapshot){
@@ -787,7 +789,10 @@ angular.module('starter.controllers', ['starter.factories'])
 
 .controller('controlPerfil', function($scope, $state, UsuarioService) {
   $scope.usuario = {};
+  $scope.imagen={};
+  $scope.imagen.foto="brain.png";
   $scope.showLoading();
+
 
   var id = firebase.auth().currentUser.uid;
   UsuarioService.getById(id).then(function(respuesta){
