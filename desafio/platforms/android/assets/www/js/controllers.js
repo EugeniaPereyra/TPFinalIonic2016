@@ -28,6 +28,8 @@ angular.module('starter.controllers', ['starter.factories'])
 
   $scope.loginData = {};
   var usuarios=[];
+  var puente = [];
+  var encontrado = false;
 
   $scope.Loguear = function() {
     // Start showing the progress
@@ -40,28 +42,31 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.loginData.password="";
           $scope.UsuarioLogueado=firebase.auth().currentUser;
           UsuarioService.getAll().then(function(respuesta){
-            usuarios=respuesta;
-          })
-          for(var i=0;i<usuarios.length;i++)
-          {
-            if(usuarios[i]==$scope.UsuarioLogueado)
+            puente=respuesta;
+            usuarios=puente.map(function(dato){
+              if(dato.$id==$scope.UsuarioLogueado.uid)
+              {
+                encontrado=true;
+              }
+            })
+            $scope.hideLoading();
+            if(encontrado)
             {
               $state.go('app.mostrar');
             }
-          }
-          $scope.hideLoading();
-          if(i==usuarios.length)
-          {
-            var usuario = {};
-            usuario.id = respuesta.uid;
-            usuario.credito = 1000;
-            usuario.primerInicio = true;
-            usuario.nombre = respuesta.email;
-            
-            UsuarioService.add(usuario);
-            console.log("usuario agregado");
-            $state.go('app.mostrar');
-          }
+            else
+            {
+              var usuario = {};
+              usuario.id = firebase.auth().currentUser.uid;
+              usuario.credito = 1000;
+              usuario.primerInicio = true;
+              usuario.nombre = firebase.auth().currentUser.email;
+              
+              UsuarioService.add(usuario);
+              console.log("usuario agregado");
+              $state.go('app.mostrar');
+            }
+          })
 
           //if(firebase.auth().currentUser.emailVerified)
           //{
@@ -156,66 +161,129 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.todos=true;
   $scope.titulo="Desafios Vigentes";
   $scope.datos=[];
-  var puente=[];
-  var datos = [];
   $scope.usuario = {};
   $scope.DateNow = new Date().getTime();
   $scope.userID = firebase.auth().currentUser.uid;
-  
-  $scope.showLoading();
 
-  DesafioService.getAll().then(function(respuesta){
-    puente = respuesta;
-    datos = puente.map(function(dato){
-      if((dato.fechaFin - $scope.DateNow) / 1000 > 0)
-      {
-        return dato;
-      }
-      else
-      {
-        if(dato.jugador=="" && !dato.computado)
-        {
-            UsuarioService.getById(dato.creador).then(function(respuesta){
-              //console.info(respuesta);
-              $scope.usuario=respuesta;
-              console.info($scope.usuario);
-              $scope.usuario.credito += parseInt(dato.valor);
-              UsuarioService.save($scope.usuario);
-              dato.disponible=false;
-              dato.computado=true;
-              dato.fechaInicio=0;
-              dato.fechaFin=0;
-              DesafioService.save(dato);
-            })
+   var refDesafio = firebase.database().ref('DESAFIOS/');
+    refDesafio.on('child_added', function(snapshot){
+        $timeout(function(){
+          var desafio = snapshot.val();
+          var id=snapshot.key;
+          if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0)
+          {
+            Computar(desafio, id); 
+          }
+          else
+          {
+            $scope.datos.push(desafio);
+          }  
+        });
+    }); 
+
+  function Computar(desafio, id){
+    // NO COMPUTADOS
+    if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
+        // NO FUE ACEPTADO
+        if(desafio.jugador == '') {
+          UsuarioService.getById(desafio.creador).then(function(respuesta){
+            var usuario=respuesta;
+            usuario.credito += parseInt(desafio.valor);
+            UsuarioService.save(usuario);
+            desafio.disponible=false;
+            desafio.computado=true;
+            var desf = firebase.database().ref().child('DESAFIOS/' + id);
+            desf.set( { creador: desafio.creador, 
+                        disponible: false,
+                        computado: true,
+                        jugador: desafio.jugador,
+                        valor: desafio.valor,
+                        quienGano: desafio.quienGano,
+                        fechaInicio: desafio.fechaInicio,
+                        fechaFin: desafio.fechaFin,
+                        pregunta: desafio.pregunta 
+                      }, function(error){
+                        console.log(error); 
+                    });          
+          })
+
+          // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
+          if(firebase.auth().currentUser.uid == desafio.creador)
+          {
+            $scope.showPopup('Nada!!','No hubo jugadores para el desafio "' + desafio.pregunta + '"');
+          }
         }
-        if(dato.jugador && !dato.computado)
-        {
-            UsuarioService.getById(dato.jugador).then(function(respuesta){
-              //console.info(respuesta);
-              $scope.usuario=respuesta;
-              $scope.usuario.credito += (parseInt(dato.valor) * 2);
-              UsuarioService.save($scope.usuario);
-              dato.disponible=false;
-              dato.computado=true;
-              dato.fechaInicio=0;
-              dato.fechaFin=0;
-              DesafioService.save(dato);
-            })
-        } 
-      }
-    })
-    puente = [];
-    for(var i=0;i<datos.length;i++)
-    {
-      if(datos[i]!=undefined)
-      {
-        puente.push(datos[i]);
-      }
+        else{
+          // FUE ACEPTADO
+          if(desafio.jugador)
+          {
+            // SI ES EL CREADOR DEBE DECIDIR QUIEN GANA
+            if(firebase.auth().currentUser.uid == desafio.creador)
+            {
+               var confirmPopup = $ionicPopup.confirm({
+                 title: 'Tiempo de desafio agotado',
+                 template: 'El otro jugador gana?'
+               });
+
+               confirmPopup.then(function(res) {
+                 if(res) {
+                  UsuarioService.getById(desafio.jugador).then(function(respuesta){
+                    //console.info(respuesta);
+                    var usuario=respuesta;
+                    usuario.credito += (parseInt(desafio.valor) * 2);
+                    UsuarioService.save(usuario);
+                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
+                    desf.set( { creador: desafio.creador, 
+                                disponible: false,
+                                computado: true,
+                                jugador: desafio.jugador,
+                                valor: desafio.valor,
+                                quienGano: desafio.quienGano,
+                                fechaInicio: desafio.fechaInicio,
+                                fechaFin: desafio.fechaFin,
+                                pregunta: desafio.pregunta 
+                              }, function(error){
+                                console.log(error); 
+                            });           
+                  })
+                 } else {
+                  UsuarioService.getById(desafio.creador).then(function(respuesta){
+                    //console.info(respuesta);
+                    var usuario=respuesta;
+                    $scope.usuario.credito += (parseInt(desafio.valor)*2);
+                    UsuarioService.save(usuario);
+                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
+                    desf.set( { creador: desafio.creador, 
+                                disponible: false,
+                                computado: true,
+                                jugador: desafio.jugador,
+                                valor: desafio.valor,
+                                quienGano: desafio.quienGano,
+                                fechaInicio: desafio.fechaInicio,
+                                fechaFin: desafio.fechaFin,
+                                pregunta: desafio.pregunta 
+                              }, function(error){
+                                console.log(error); 
+                              }); 
+                    })
+                  }
+               })
+            }
+            if(desafio.quienGano != "")
+            {
+              if(firebase.auth().currentUser.uid == desafio.quienGano)
+              {
+                $scope.showPopup('Desafio ganado!!','Ganaste, muchas felicitaciones!!');
+              }
+              else
+              {
+                $scope.showPopup('Desafio perdido!!','La proxima será!!');
+              }
+            }
+         }
+       }
     }
-    $scope.datos=puente;
-  },function(error){
-    console.log(error);
-  })
+  }
 
   UsuarioService.getById($scope.userID).then(function(respuesta){
       //console.info("usuario:"+respuesta);
@@ -238,7 +306,6 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 
   $scope.Terminado=function(desafio){
-    $scope.showPopup('Finalizado!', 'Transcurrio el tiempo');     
   }
 })
 
@@ -250,13 +317,14 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.desafio.computado=false;
   $scope.desafio.jugador="";
   $scope.desafio.valor=50;
+  $scope.desafio.quienGano="";
   //$scope.desafio.respuestaElegida = "";
   
   
-  $scope.arrayDias = Array.from(Array(7).keys()); 
-  $scope.arrayHoras = Array.from(Array(25).keys()); 
-  $scope.arrayMinutos = Array.from(Array(61).keys()); 
-  $scope.arraySegundos = Array.from(Array(61).keys()); 
+  $scope.arrayDias = Array.from(Array(6).keys()); 
+  $scope.arrayHoras = Array.from(Array(24).keys()); 
+  $scope.arrayMinutos = Array.from(Array(60).keys()); 
+  $scope.arraySegundos = Array.from(Array(60).keys()); 
 
   $scope.tiempo = { dias: 0, horas: 0, minutos: 0, segundos: 0 };
 
@@ -345,7 +413,7 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-.controller('controlAceptados', function($scope, $state, DesafioService, $timeout) {
+.controller('controlAceptados', function($scope, $state, DesafioService, $timeout, UsuarioService) {
   $scope.mostrar=false;
   $scope.aceptados=true;
   $scope.todos=false;
@@ -354,23 +422,132 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.datos=[];
   $scope.DateNow = new Date().getTime();
   
-  $scope.showLoading();
-  
-  DesafioService.getAll().then(function(respuesta){
-    $scope.datos=respuesta;
-    $scope.hideLoading(); 
-  },function(error){
-    console.log(error);
-  });
+   var refDesafio = firebase.database().ref('DESAFIOS/');
+    refDesafio.on('child_added', function(snapshot){
+        $timeout(function(){
+          var desafio = snapshot.val();
+          var id=snapshot.key;
+          if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0)
+          {
+            Computar(desafio, id); 
+          }
+          else
+          {
+            $scope.datos.push(desafio);
+          }  
+        });
+    }); 
+
+  function Computar(desafio, id){
+    // NO COMPUTADOS
+    if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
+        // NO FUE ACEPTADO
+        if(desafio.jugador == '') {
+          UsuarioService.getById(desafio.creador).then(function(respuesta){
+            var usuario=respuesta;
+            usuario.credito += parseInt(desafio.valor);
+            UsuarioService.save(usuario);
+            desafio.disponible=false;
+            desafio.computado=true;
+            var desf = firebase.database().ref().child('DESAFIOS/' + id);
+            desf.set( { creador: desafio.creador, 
+                        disponible: false,
+                        computado: true,
+                        jugador: desafio.jugador,
+                        valor: desafio.valor,
+                        quienGano: desafio.quienGano,
+                        fechaInicio: desafio.fechaInicio,
+                        fechaFin: desafio.fechaFin,
+                        pregunta: desafio.pregunta 
+                      }, function(error){
+                        console.log(error); 
+                    });          
+          })
+
+          // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
+          if(firebase.auth().currentUser.uid == desafio.creador)
+          {
+            $scope.showPopup('Nada!!','No hubo jugadores para el desafio "' + desafio.pregunta + '"');
+          }
+        }
+        else{
+          // FUE ACEPTADO
+          if(desafio.jugador)
+          {
+            // SI ES EL CREADOR DEBE DECIDIR QUIEN GANA
+            if(firebase.auth().currentUser.uid == desafio.creador)
+            {
+               var confirmPopup = $ionicPopup.confirm({
+                 title: 'Tiempo de desafio agotado',
+                 template: 'El otro jugador gana?'
+               });
+
+               confirmPopup.then(function(res) {
+                 if(res) {
+                  UsuarioService.getById(desafio.jugador).then(function(respuesta){
+                    //console.info(respuesta);
+                    var usuario=respuesta;
+                    usuario.credito += (parseInt(desafio.valor) * 2);
+                    UsuarioService.save(usuario);
+                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
+                    desf.set( { creador: desafio.creador, 
+                                disponible: false,
+                                computado: true,
+                                jugador: desafio.jugador,
+                                valor: desafio.valor,
+                                quienGano: desafio.quienGano,
+                                fechaInicio: desafio.fechaInicio,
+                                fechaFin: desafio.fechaFin,
+                                pregunta: desafio.pregunta 
+                              }, function(error){
+                                console.log(error); 
+                            });           
+                  })
+                 } else {
+                  UsuarioService.getById(desafio.creador).then(function(respuesta){
+                    //console.info(respuesta);
+                    var usuario=respuesta;
+                    $scope.usuario.credito += (parseInt(desafio.valor)*2);
+                    UsuarioService.save(usuario);
+                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
+                    desf.set( { creador: desafio.creador, 
+                                disponible: false,
+                                computado: true,
+                                jugador: desafio.jugador,
+                                valor: desafio.valor,
+                                quienGano: desafio.quienGano,
+                                fechaInicio: desafio.fechaInicio,
+                                fechaFin: desafio.fechaFin,
+                                pregunta: desafio.pregunta 
+                              }, function(error){
+                                console.log(error); 
+                            }); 
+                  })
+                 }
+               })
+            }
+            if(desafio.quienGano != "")
+            {
+              if(firebase.auth().currentUser.uid == desafio.quienGano)
+              {
+                $scope.showPopup('Desafio ganado!!','Ganaste, muchas felicitaciones!!');
+              }
+              else
+              {
+                $scope.showPopup('Desafio perdido!!','La proxima será!!');
+              }
+            }
+         }
+       }
+    }
+  }
 
   $scope.Terminado=function(desafio){
-      desafio.disponible=false;
-      DesafioService.save(desafio);
   }
 })
 
 
-.controller('controlMisDesafios', function($scope, $state, DesafioService, $timeout) {
+.controller('controlMisDesafios', function($scope, $state, DesafioService, $timeout, UsuarioService) {
   $scope.userID = firebase.auth().currentUser.uid;
   $scope.titulo="Mis Desafios";
   $scope.mostrar=true;
@@ -378,19 +555,129 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.aceptados=false;
   $scope.DateNow = new Date().getTime();
   $scope.datos=[];
-  
-  $scope.showLoading();
+  var desafios=[];
 
-  DesafioService.getAll().then(function(respuesta){
-    $scope.datos=respuesta;
-    $scope.hideLoading(); 
-  },function(error){
-    console.log(error);
-  });
+   var refDesafio = firebase.database().ref('DESAFIOS/');
+    refDesafio.on('child_added', function(snapshot){
+        $timeout(function(){
+          var desafio = snapshot.val();
+          var id=snapshot.key;
+          if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0)
+          {
+            Computar(desafio, id); 
+          }
+          else
+          {
+            $scope.datos.push(desafio);
+          }  
+        });
+    }); 
+
+  function Computar(desafio, id){
+    // NO COMPUTADOS
+    if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
+        // NO FUE ACEPTADO
+        if(desafio.jugador == '') {
+          UsuarioService.getById(desafio.creador).then(function(respuesta){
+            var usuario=respuesta;
+            usuario.credito += parseInt(desafio.valor);
+            UsuarioService.save(usuario);
+            desafio.disponible=false;
+            desafio.computado=true;
+            var desf = firebase.database().ref().child('DESAFIOS/' + id);
+            desf.set( { creador: desafio.creador, 
+                        disponible: false,
+                        computado: true,
+                        jugador: desafio.jugador,
+                        valor: desafio.valor,
+                        quienGano: desafio.quienGano,
+                        fechaInicio: desafio.fechaInicio,
+                        fechaFin: desafio.fechaFin,
+                        pregunta: desafio.pregunta 
+                      }, function(error){
+                        console.log(error); 
+                    });          
+          })
+
+          // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
+          if(firebase.auth().currentUser.uid == desafio.creador)
+          {
+            $scope.showPopup('Nada!!','No hubo jugadores para el desafio "' + desafio.pregunta + '"');
+          }
+        }
+        else{
+          // FUE ACEPTADO
+          if(desafio.jugador)
+          {
+            // SI ES EL CREADOR DEBE DECIDIR QUIEN GANA
+            if(firebase.auth().currentUser.uid == desafio.creador)
+            {
+               var confirmPopup = $ionicPopup.confirm({
+                 title: 'Tiempo de desafio agotado',
+                 template: 'El otro jugador gana?'
+               });
+
+               confirmPopup.then(function(res) {
+                 if(res) {
+                  UsuarioService.getById(desafio.jugador).then(function(respuesta){
+                    //console.info(respuesta);
+                    var usuario=respuesta;
+                    usuario.credito += (parseInt(desafio.valor) * 2);
+                    UsuarioService.save(usuario);
+                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
+                    desf.set( { creador: desafio.creador, 
+                                disponible: false,
+                                computado: true,
+                                jugador: desafio.jugador,
+                                valor: desafio.valor,
+                                quienGano: desafio.jugador,
+                                fechaInicio: desafio.fechaInicio,
+                                fechaFin: desafio.fechaFin,
+                                pregunta: desafio.pregunta 
+                              }, function(error){
+                                console.log(error); 
+                            });           
+                  })
+                 } else {
+                  UsuarioService.getById(desafio.creador).then(function(respuesta){
+                    //console.info(respuesta);
+                    var usuario=respuesta;
+                    $scope.usuario.credito += (parseInt(desafio.valor)*2);
+                    UsuarioService.save(usuario);
+                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
+                    desf.set( { creador: desafio.creador, 
+                                disponible: false,
+                                computado: true,
+                                jugador: desafio.jugador,
+                                valor: desafio.valor,
+                                quienGano: desafio.creador,
+                                fechaInicio: desafio.fechaInicio,
+                                fechaFin: desafio.fechaFin,
+                                pregunta: desafio.pregunta 
+                              }, function(error){
+                                console.log(error); 
+                            }); 
+                  })
+                 }
+               })
+            }
+            if(desafio.quienGano != "")
+            {
+              if(firebase.auth().currentUser.uid == desafio.quienGano)
+              {
+                $scope.showPopup('Desafio ganado!!','Ganaste, muchas felicitaciones!!');
+              }
+              else
+              {
+                $scope.showPopup('Desafio perdido!!','La proxima será!!');
+              }
+            }
+         }
+       }
+    }
+  }
 
   $scope.Terminado=function(desafio){
-      desafio.disponible=false;
-      DesafioService.save(desafio);
   }
 })
 
@@ -405,19 +692,40 @@ angular.module('starter.controllers', ['starter.factories'])
     }
 })
 
-.controller('controlCargar', function($scope, CreditoService, UsuarioService, $state) {
+.controller('controlCargar', function($scope, CreditoService, UsuarioService, $state, $stateParams, $cordovaBarcodeScanner) {
   var idCred;
   var idUsr = firebase.auth().currentUser.uid;
   $scope.usuario = {};
   $scope.credito = {};
   $scope.creditos = {}; 
   $scope.carga = {};
-  $scope.carga.valor="";
+  $scope.cambia={};
+  $scope.cambia.nombre="";
+  $scope.mostrarCambiar=false;
+  $scope.mostrarCargar=false;
+
+  var dato=$stateParams.accion;
+  if(dato=="cambiar")
+  {
+    $scope.mostrarCambiar=true;
+    $scope.mostrarCargar=false;
+  }
+  if(dato=="cargar")
+  {
+    $scope.mostrarCargar=true;
+    $scope.mostrarCambiar=false;
+  }
 
   CreditoService.getAll().then(function(respuesta){
     $scope.creditos=respuesta;
-    console.log($scope.creditos);
-  })
+  },function(error){
+    console.log(error);
+  });
+  UsuarioService.getById(idUsr).then(function(respuesta){
+      $scope.usuario = respuesta;
+    },function(error){
+    console.log(error);
+  });
 
   $scope.Cargar=function(){        
         for(var i=0;i<$scope.creditos.length;i++)
@@ -428,18 +736,58 @@ angular.module('starter.controllers', ['starter.factories'])
             break;
           }
         }
-        UsuarioService.getById(idUsr).then(function(respuesta){
-          $scope.usuario = respuesta;
-          $scope.usuario.credito += parseInt($scope.carga.valor);
-          UsuarioService.save($scope.usuario); 
-          CreditoService.getById(idCred).then(function(respuesta){
-            $scope.credito=respuesta;
-            CreditoService.remove($scope.credito);
-            $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
-            $state.go('app.perfil');
-            })
-          }) 
-        }  
+        $scope.usuario.credito += parseInt($scope.carga.valor);
+        UsuarioService.save($scope.usuario); 
+        CreditoService.getById(idCred).then(function(respuesta){
+          $scope.credito=respuesta;
+          CreditoService.remove($scope.credito);
+          $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
+          $state.go('app.perfil');
+        });
+      } 
+
+  $scope.Escanear=function(){
+    try
+    {
+      document.addEventListener("deviceready", function () {
+          $cordovaBarcodeScanner.scan()
+          .then(function(barcodeData) {
+            alert(barcodeData);
+            if(barcodeData.text!=""){
+              for(var i=0;i<$scope.creditos.length;i++)
+              {
+                if($scope.creditos[i].valor==$scope.carga.valor)
+                {
+                  idCred=$scope.creditos[i].$id;
+                  break;
+                }
+              }
+              $scope.usuario.credito += parseInt(barcodeData.text);
+              UsuarioService.save($scope.usuario); 
+              CreditoService.getById(idCred).then(function(respuesta){
+                $scope.credito=respuesta;
+                CreditoService.remove($scope.credito);
+                $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
+                $state.go('app.perfil');
+              });
+            }
+          }, function(error) {
+            console.log(error);
+          });
+      }, false);
+    }
+    catch(err)
+    {
+      console.log("EL PLUGIN SOLO FUNCIONA EN CELULARES");
+    }
+  }
+
+  $scope.Cambiar=function(){
+        $scope.usuario.nombre=$scope.cambia.nombre;
+        UsuarioService.save($scope.usuario);
+        $scope.showPopup('Correcto', 'Se ha cambiado el nombre');
+        $state.go('app.perfil');
+      } 
 })
 
 .controller('controlPerfil', function($scope, $state, UsuarioService) {
@@ -449,20 +797,19 @@ angular.module('starter.controllers', ['starter.factories'])
   var id = firebase.auth().currentUser.uid;
   UsuarioService.getById(id).then(function(respuesta){
     $scope.usuario = respuesta;
-    $scope.usuario.mail = firebase.auth().currentUser.email;
     $scope.hideLoading(); 
   },function(error){
     console.log(error);
   });
 
   $scope.Cambiar=function(){
-    UsuarioService.save($scope.usuario);
-    $scope.showPopup('Correcto', 'Se ha cambiado el nombre');
+    var dato = "cambiar";
+    $state.go('app.cargar',{accion: dato});
   }
 
   $scope.Cargar=function(){
-    var dato = JSON.stringify($scope.usuario);
-    $state.go('app.cargar',{usuario: dato});
+    var dato = "cargar";
+    $state.go('app.cargar',{accion: dato});
   }
   
 })

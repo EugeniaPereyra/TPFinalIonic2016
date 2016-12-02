@@ -1,33 +1,32 @@
-<ion-view view-title="Perfil" class="pagina">
+<ion-view class="pagina">
   <ion-content>
   <center>
   <br/>
     <div class="col header text-center">
-		<img ng-src="../img/brain-2.png"/>
+		<img src="./img/brain.png"/>
   	</div>
     <br/>
 
-    <div class="row" style="width: 75%">
+    <div class="row">
       <div class="col">
-        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%">Nombre:</label>
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong>Nombre:</strong></label>
       </div>
       <div class="col">
-        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%"> {{usuario.nombre}}</label>
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong> {{usuario.nombre}}</strong></label>
       </div>
       <div class="col">
-        <button style="width:25%" class="button button-small button-positive" ng-click="Cambiar()">Cambiar</button>
+        <button style="width:35%" class="button button-small button-positive" ng-click="Cambiar()">Cambiar</button>
       </div>
     </div>
-    <br><br>
-    <div class="row" style="width: 75%">
+    <div class="row">
       <div class="col">
-        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%">Saldo:</label>
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong>Saldo:</strong></label>
       </div>
       <div class="col">
-        <label style="color: darkblue; font-size: 25px; font-style: bold; width:25%">{{usuario.credito | currency}}</label>
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong>{{usuario.credito | currency}}</strong></label>
       </div>
       <div class="col">
-        <button style="width:25%" class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
+        <button style="width:35%" class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
       </div>
     </div>
 

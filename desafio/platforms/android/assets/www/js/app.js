@@ -9,7 +9,8 @@ angular.module('starter', [
   'starter.controllers', 
   'starter.factories',
   'timer',
-  'menu.controllers'
+  'menu.controllers',
+  'ngCordova'
   ])
 
 .run(function($ionicPlatform) {
@@ -58,6 +59,7 @@ angular.module('starter', [
 
     .state('app.desafio', {
     url: '/desafio',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/desafio.html',
@@ -68,6 +70,7 @@ angular.module('starter', [
 
     .state('app.apuesta', {
     url: '/apuesta/:desafio',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/apuesta.html',
@@ -100,6 +103,7 @@ angular.module('starter', [
 
   .state('app.creditos', {
     url: '/creditos',
+    cache: false,
     views: {
       'menuContent': {
           templateUrl: 'templates/creditos.html',
@@ -120,7 +124,7 @@ angular.module('starter', [
   })
 
   .state('app.cargar', {
-    url: '/cargar',
+    url: '/cargar/:accion',
     cache: false,
     views: {
       'menuContent': {

@@ -1,8 +1,14 @@
 angular.module('menu.controllers', [])
 
-.controller('controlMenu', function($scope, $state, $ionicLoading, $ionicPopup) {
+.controller('controlMenu', function($scope, $state, $ionicLoading, $ionicPopup, UsuarioService) {
 
   $scope.UsuarioLogueado=firebase.auth().currentUser;
+  var id=$scope.UsuarioLogueado.uid;
+  UsuarioService.getById(id).then(function(respuesta){
+      $scope.usuario = respuesta;
+    },function(error){
+    console.log(error);
+  });
   if($scope.UsuarioLogueado== null || $scope.UsuarioLogueado == undefined)
   {
     $state.go('login');

@@ -3,22 +3,32 @@
   <center>
   <br/>
     <div class="col header text-center">
-		<img ng-src="img/brain-2.png"/>
+		<img src="./img/brain.png"/>
   	</div>
     <br/>
 
-    <div class="list" style="width: 35%">
-        <div class="item item-input-inset">
-        <label>Nombre:</label>
-        <label class="item-input-wrapper">
-          <input type="text" placeholder="{{usuario.nombre}}" ng-model="usuario.nombre">
-        </label>
-        <button class="button button-small button-positive" ng-click="Cambiar()">
-          Cambiar
-        </button>
+    <div class="row">
+      <div class="col">
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong>Nombre:</strong></label>
+      </div>
+      <div class="col">
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong> {{usuario.nombre}}</strong></label>
+      </div>
+      <div class="col">
+        <button style="width:35%" class="button button-small button-positive" ng-click="Cambiar()">Cambiar</button>
       </div>
     </div>
-    <label style="color: darkblue; font-size: 25px; font-style: bold;">Saldo:&ensp; &ensp; &ensp; {{usuario.credito | currency}}&ensp; &ensp; &ensp;</label><button class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
+    <div class="row">
+      <div class="col">
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong>Saldo:</strong></label>
+      </div>
+      <div class="col">
+        <label style="color: darkblue; font-size: 20; font-style: bold;"><strong>{{usuario.credito | currency}}</strong></label>
+      </div>
+      <div class="col">
+        <button style="width:35%" class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
+      </div>
+    </div>
 
     </center>
   </ion-content>

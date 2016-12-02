@@ -152,14 +152,12 @@ angular.module('starter.controllers', ['starter.factories'])
 
   $scope.JugadorDos=function(){
   }
-
 })
 
 .controller('controlMostrar', function($scope, $state, $ionicPopup, $timeout, DesafioService, UsuarioService) {
   $scope.mostrar=false;
   $scope.aceptados=false;
   $scope.todos=true;
-  $scope.titulo="Desafios Vigentes";
   $scope.datos=[];
   $scope.usuario = {};
   $scope.DateNow = new Date().getTime();
@@ -264,9 +262,9 @@ angular.module('starter.controllers', ['starter.factories'])
                                 pregunta: desafio.pregunta 
                               }, function(error){
                                 console.log(error); 
-                            }); 
-                  })
-                 }
+                              }); 
+                    })
+                  }
                })
             }
             if(desafio.quienGano != "")
@@ -417,7 +415,6 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.mostrar=false;
   $scope.aceptados=true;
   $scope.todos=false;
-  $scope.titulo="Desafios Aceptados";
   $scope.userID = firebase.auth().currentUser.uid;
   $scope.datos=[];
   $scope.DateNow = new Date().getTime();
@@ -546,10 +543,8 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-
 .controller('controlMisDesafios', function($scope, $state, DesafioService, $timeout, UsuarioService) {
   $scope.userID = firebase.auth().currentUser.uid;
-  $scope.titulo="Mis Desafios";
   $scope.mostrar=true;
   $scope.todos=false;
   $scope.aceptados=false;
@@ -630,7 +625,7 @@ angular.module('starter.controllers', ['starter.factories'])
                                 computado: true,
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
-                                quienGano: desafio.quienGano,
+                                quienGano: desafio.jugador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -650,7 +645,7 @@ angular.module('starter.controllers', ['starter.factories'])
                                 computado: true,
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
-                                quienGano: desafio.quienGano,
+                                quienGano: desafio.creador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -681,18 +676,18 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-.controller('CreditosCtrl', function($scope, CreditoService) {
+.controller('CreditosCtrl', function($scope, CreditoService, $state) {
   $scope.credito = {}; 
   $scope.cantidad ={}; 
 
   $scope.Aceptar=function(){
-
         CreditoService.add($scope.cantidad,$scope.credito);
-          $scope.showPopup('Los creditos se han generado correctamente', '', 'button-balanced');       
+        $scope.showPopup('Los creditos se han generado correctamente', '', 'button-balanced');   
+        $state.go('app.mostrar');    
     }
 })
 
-.controller('controlCargar', function($scope, CreditoService, UsuarioService, $state, $stateParams) {
+.controller('controlCargar', function($scope, CreditoService, UsuarioService, $state, $stateParams, $cordovaBarcodeScanner) {
   var idCred;
   var idUsr = firebase.auth().currentUser.uid;
   $scope.usuario = {};
@@ -743,31 +738,34 @@ angular.module('starter.controllers', ['starter.factories'])
           CreditoService.remove($scope.credito);
           $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
           $state.go('app.perfil');
-        })
+        });
       } 
 
-  $scope.Escanear=function{
+  $scope.Escanear=function(){
     try
     {
       document.addEventListener("deviceready", function () {
           $cordovaBarcodeScanner.scan()
           .then(function(barcodeData) {
-            for(var i=0;i<$scope.creditos.length;i++)
-            {
-              if($scope.creditos[i].valor==$scope.carga.valor)
+            alert(barcodeData);
+            if(barcodeData.text!=""){
+              for(var i=0;i<$scope.creditos.length;i++)
               {
-                idCred=$scope.creditos[i].$id;
-                break;
+                if($scope.creditos[i].valor==$scope.carga.valor)
+                {
+                  idCred=$scope.creditos[i].$id;
+                  break;
+                }
               }
+              $scope.usuario.credito += parseInt(barcodeData.text);
+              UsuarioService.save($scope.usuario); 
+              CreditoService.getById(idCred).then(function(respuesta){
+                $scope.credito=respuesta;
+                CreditoService.remove($scope.credito);
+                $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
+                $state.go('app.perfil');
+              });
             }
-            $scope.usuario.credito += parseInt(barcodeData.text);
-            UsuarioService.save($scope.usuario); 
-            CreditoService.getById(idCred).then(function(respuesta){
-              $scope.credito=respuesta;
-              CreditoService.remove($scope.credito);
-              $scope.showPopup('Correcto!', 'Carga de credito realizada correctamente');
-              $state.go('app.perfil');
-            });
           }, function(error) {
             console.log(error);
           });
@@ -808,7 +806,6 @@ angular.module('starter.controllers', ['starter.factories'])
     var dato = "cargar";
     $state.go('app.cargar',{accion: dato});
   }
-  
 })
 
 .controller('AutorCtrl', function($scope) {

@@ -37,7 +37,7 @@
         <ion-item menu-close ng-click="Mostrar()"><ion-icon class="ion-ios-folder-outline" style="font-size: 18px;">
           Mis Desafios
         </ion-item>
-        <ion-item menu-close ng-click="Creditos()"><ion-icon class="ion-social-usd-outline" style="font-size: 18px;">
+        <ion-item menu-close ng-click="Creditos()" ng-show="UsuarioLogueado.email=='admin@admin.com'"><ion-icon class="ion-social-usd-outline" style="font-size: 18px;">
           Generar Créditos
         </ion-item>
         <ion-item menu-close ng-click="Autor()"><ion-icon class="ion-ios-information-outline" style="font-size: 18px;">

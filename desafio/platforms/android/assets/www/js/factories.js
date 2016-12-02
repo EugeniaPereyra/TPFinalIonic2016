@@ -21,6 +21,12 @@ angular.module('starter.factories', ["firebase"])
                         return datos[index];
                     })
                 };
+
+            this.getById = function(id){
+                    return this.arrayDesafios.$loaded().then(function(datos){
+                        return datos.$getRecord(id);
+                    })
+                };
                 //
             this.add = function(desafio){
                     this.arrayDesafios.$add(desafio).then(function(ref){
