@@ -1,0 +1,73 @@
+<ion-view class="pagina" >
+  <ion-content>
+  <center>
+    <div class="item">
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Ingrese desafio:</strong></label><br>
+          <textarea ng-model="desafio.pregunta" style="width: 100%; text-align: center">
+          </textarea>
+        </div>
+      </div>   
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Ingrese valor de la apuesta:</strong></label><br>
+          <div class="item range">
+            <p><strong>10</strong></p>
+            <input type="range" min="10" max="100" value="50" step="10" ng-model="desafio.valor" name="valor">
+            <p><strong>100</strong></p>
+          </div>
+          <br/>
+          <p><strong>{{desafio.valor}}</strong></p>
+        </div>
+      </div>   
+
+      <div class="card">
+        <label><strong>Seleccione la vigencia del desafio:</strong></label><br>
+          <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Días 0</strong></p>
+              <input type="range" min="0" max="6" value="0" step="1" ng-model="tiempo.dias">
+              <p><strong>6</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.dias}}</strong></p>
+        </div>
+        <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Horas 0</strong></p>
+              <input type="range" min="0" max="23" value="0" step="1" ng-model="tiempo.horas">
+              <p><strong>23</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.horas}}</strong></p>
+        </div>
+        <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Minutos 0</strong></p>
+              <input type="range" min="0" max="59" value="0" step="1" ng-model="tiempo.minutos">
+              <p><strong>59</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.minutos}}</strong></p>
+        </div>
+        <div class="item item-text-wrap">          
+            <div class="item range">
+              <p><strong>Segundos 0</strong></p>
+              <input type="range" min="0" max="59" value="0" step="1" ng-model="tiempo.segundos">
+              <p><strong>59</strong></p>
+            </div>
+          <br/>
+          <p><strong>{{tiempo.segundos}}</strong></p>
+        </div>
+      </div>     
+      <br>
+      
+      <button class="button button-large button-outline button-balanced" ng-click="Aceptar()">
+        Crear
+      </button>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,30 @@
+<ion-view class="pagina">
+  <ion-content>
+    <center>
+      <div class="item">
+      <h3>Apuesta por {{desafio.valor | currency}}</h3>
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item  ng-model="desafio.pregunta" ><label>{{desafio.pregunta}}</label>
+            </ion-item>
+          </div>
+        </div>  
+
+        <div class="card">
+          <div class="item item-text-wrap">
+            <ion-item>
+              <label>Tu credito disponible es: {{credito | currency}}</label>
+            </ion-item>
+          </div>
+        </div>
+
+        <div ng-if="desafio.creador != userID">
+          <button class="button button-large button-outline button-balanced" ng-click="AceptarDesafio()">
+            Aceptar Desafio
+          </button>
+        </div>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>

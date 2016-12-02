@@ -1,0 +1,25 @@
+<ion-view class="pagina">
+  <ion-content>
+  <center>
+  <br/>
+    <div class="col header text-center">
+		<img ng-src="img/{{imagen.foto}}"/>
+  	</div>
+    <br/>
+
+    <div class="col">
+      <div class="list">
+        
+          <label class="item item-input item-stacked-label" style="color: darkblue; font-size: 20; font-style: bold;">
+            <span class="input-label"> <strong>Nombre: {{usuario.nombre}} </strong></span><button class="button button-small button-positive" ng-click="Cambiar()">Cambiar</button>
+          </label>   
+          <label class="item item-input item-stacked-label" style="color: darkblue; font-size: 20; font-style: bold;">
+            <span class="input-label"> <strong>Saldo: {{usuario.credito | currency}} </strong></span><button style="width:35%" class="button button-small button-positive" ng-click="Cargar()">Cargar</button>
+          </label>     
+        
+      </div>
+    </div>
+
+    </center>
+  </ion-content>
+</ion-view>
