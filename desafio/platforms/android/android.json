@@ -43,6 +43,14 @@
                         {
                             "xml": "<feature name=\"Vibration\"><param name=\"android-package\" value=\"org.apache.cordova.vibration.Vibration\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"DeviceFeedback\"><param name=\"android-package\" value=\"cz.Velda.cordova.plugin.devicefeedback.DeviceFeedback\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -140,6 +148,12 @@
         },
         "cordova-plugin-vibration": {
             "PACKAGE_NAME": "com.ionicframework.desafio"
+        },
+        "cordova-plugin-velda-devicefeedback": {
+            "PACKAGE_NAME": "com.ionicframework.desafio"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.ionicframework.desafio"
         }
     },
     "dependent_plugins": {},
@@ -201,6 +215,21 @@
                 "navigator.notification",
                 "navigator"
             ]
+        },
+        {
+            "file": "plugins/cordova-plugin-velda-devicefeedback/DeviceFeedback.js",
+            "id": "cordova-plugin-velda-devicefeedback.DeviceFeedback",
+            "clobbers": [
+                "window.plugins.deviceFeedback"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
+            "id": "cordova-plugin-inappbrowser.inappbrowser",
+            "clobbers": [
+                "cordova.InAppBrowser.open",
+                "window.open"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -214,6 +243,8 @@
         "phonegap-plugin-barcodescanner": "6.0.3",
         "cordova-plugin-fcm": "1.1.5",
         "cordova-plugin-nativeaudio": "3.0.6",
-        "cordova-plugin-vibration": "2.1.2"
+        "cordova-plugin-vibration": "2.1.2",
+        "cordova-plugin-velda-devicefeedback": "0.0.2",
+        "cordova-plugin-inappbrowser": "1.5.0"
     }
 }

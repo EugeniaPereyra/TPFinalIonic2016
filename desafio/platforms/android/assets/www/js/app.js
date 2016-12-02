@@ -7,9 +7,15 @@
 angular.module('starter', [
   'ionic', 
   'starter.controllers', 
-  'starter.factories',
   'timer',
   'menu.controllers',
+  'grillas.controllers',
+  'desafio.controllers',
+  'credito.controllers',
+  'desafio.servicios',
+  'usuarios.servicio',
+  'credito.servicios',
+  'push.servicio',
   'ngCordova'
   ])
 
@@ -25,6 +31,17 @@ angular.module('starter', [
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+    }
+    if( window.plugins && window.plugins.NativeAudio ) {
+      window.plugins.NativeAudio.preloadSimple('si', 'audio/si.mp3', function(msg){
+        }, function(msg){
+            console.log( 'Error: ' + msg );
+        });
+
+      window.plugins.NativeAudio.preloadSimple('no', 'audio/no.mp3', function(msg){
+        }, function(msg){
+            console.log( 'Error: ' + msg );
+        });
     }
   });
 })

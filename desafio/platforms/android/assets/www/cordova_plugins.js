@@ -57,6 +57,21 @@ module.exports = [
             "navigator.notification",
             "navigator"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-velda-devicefeedback/DeviceFeedback.js",
+        "id": "cordova-plugin-velda-devicefeedback.DeviceFeedback",
+        "clobbers": [
+            "window.plugins.deviceFeedback"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
+        "id": "cordova-plugin-inappbrowser.inappbrowser",
+        "clobbers": [
+            "cordova.InAppBrowser.open",
+            "window.open"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -72,7 +87,9 @@ module.exports.metadata =
     "phonegap-plugin-barcodescanner": "6.0.3",
     "cordova-plugin-fcm": "1.1.5",
     "cordova-plugin-nativeaudio": "3.0.6",
-    "cordova-plugin-vibration": "2.1.2"
+    "cordova-plugin-vibration": "2.1.2",
+    "cordova-plugin-velda-devicefeedback": "0.0.2",
+    "cordova-plugin-inappbrowser": "1.5.0"
 };
 // BOTTOM OF METADATA
 });

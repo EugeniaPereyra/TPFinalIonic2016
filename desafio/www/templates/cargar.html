@@ -7,23 +7,23 @@
           <label><strong>Seleccione el valor a cargar:</strong></label><br>
           <div style="width: 100%">
             <label>Valor:</label>
-            <select ng-model="carga.valor">
+            <select ng-model="carga.id">
                   <option value="">Seleccione monto..</option>
-                  <option ng-repeat="v in creditos" value={{v.valor}}>{{v.valor}}</option>
+                  <option ng-repeat="v in creditos" value={{v.$id}}>{{v.valor}}</option>
             </select>
           </div>
         </div>
       </div>
       <br>
-            <div ng-show="carga.valor">
-              <img ng-src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{carga.valor}}" width="150" height="150" />
+            <div ng-show="carga.id">
+              <img ng-src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{carga.id}}" width="150" height="150" />
               <br><br>
-                  <button class="button button-large button-outline button-balanced" ng-click="Escanear()">Escanear
+                  <button class="button button-large button-balanced" ng-click="Escanear()">Escanear
                   </button>
               <br><br>
             </div>
       <br>
-      <button class="button button-large button-outline button-balanced" ng-click="Cargar()">
+      <button class="button button-large button-balanced" ng-click="Cargar()">
         Cargar
       </button>
 
@@ -40,7 +40,7 @@
       </div>
       <br>
       
-      <button class="button button-large button-outline button-balanced" ng-click="Cambiar()">
+      <button class="button button-large button-balanced" ng-click="Cambiar()">
         Cambiar
       </button>
 
