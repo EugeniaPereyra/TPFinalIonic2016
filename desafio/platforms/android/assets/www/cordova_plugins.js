@@ -42,6 +42,21 @@ module.exports = [
         "clobbers": [
             "FCMPlugin"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-nativeaudio/www/nativeaudio.js",
+        "id": "cordova-plugin-nativeaudio.nativeaudio",
+        "clobbers": [
+            "window.plugins.NativeAudio"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-vibration/www/vibration.js",
+        "id": "cordova-plugin-vibration.notification",
+        "merges": [
+            "navigator.notification",
+            "navigator"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -55,7 +70,9 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.3.0",
     "ionic-plugin-keyboard": "2.2.1",
     "phonegap-plugin-barcodescanner": "6.0.3",
-    "cordova-plugin-fcm": "1.1.5"
+    "cordova-plugin-fcm": "1.1.5",
+    "cordova-plugin-nativeaudio": "3.0.6",
+    "cordova-plugin-vibration": "2.1.2"
 };
 // BOTTOM OF METADATA
 });

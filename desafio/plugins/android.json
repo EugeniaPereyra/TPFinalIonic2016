@@ -30,6 +30,12 @@
         },
         "cordova-plugin-fcm": {
             "PACKAGE_NAME": "com.ionicframework.tpfinalionic218461"
+        },
+        "cordova-plugin-nativeaudio": {
+            "PACKAGE_NAME": "com.ionicframework.desafio"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "com.ionicframework.desafio"
         }
     },
     "dependent_plugins": {
