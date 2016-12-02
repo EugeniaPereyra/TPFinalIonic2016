@@ -1,25 +1,52 @@
-<ion-view view-title="Cargar credito" class="pagina" >
+<ion-view class="pagina">
   <ion-content>
-  <center>   
+  <center> 
+    <div ng-show="mostrarCargar">  
       <div class="card">
         <div class="item item-text-wrap">
           <label><strong>Seleccione el valor a cargar:</strong></label><br>
           <div style="width: 100%">
             <label>Valor:</label>
-            <select ng-model="carga.valor">
+            <select ng-model="carga.id">
                   <option value="">Seleccione monto..</option>
-                  <option ng-repeat="v in creditos" value={{v.valor}}>{{v.valor}}</option>
+                  <option ng-repeat="v in creditos" value={{v.$id}}>{{v.valor}}</option>
             </select>
           </div>
         </div>
       </div>
       <br>
-      
-      <button class="button button-large button-outline button-balanced" ng-click="Cargar()">
+            <div ng-show="carga.id">
+              <img ng-src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl={{carga.id}}" width="150" height="150" />
+              <br><br>
+                  <button class="button button-large button-balanced" ng-click="Escanear()">Escanear
+                  </button>
+              <br><br>
+            </div>
+      <br>
+      <button class="button button-large button-balanced" ng-click="Cargar()">
         Cargar
       </button>
 
     </div>
+
+    <div ng-show="mostrarCambiar">  
+      <div class="card">
+        <div class="item item-text-wrap">
+          <label><strong>Ingrese su nuevo nombre:</strong></label><br>
+          <div style="width: 100%">
+            <input type="text" ng-model="cambia.nombre"></input>
+          </div>
+        </div>
+      </div>
+      <br>
+      
+      <button class="button button-large button-balanced" ng-click="Cambiar()">
+        Cambiar
+      </button>
+
+    </div>
+
+
 	</center>
   </ion-content>
 </ion-view>

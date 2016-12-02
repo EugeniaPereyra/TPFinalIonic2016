@@ -4,9 +4,38 @@
 /* when showing the picture */
 .ng-hide-remove      { animation:0.5s fadeInDown ease; }
 
+.bien{
+    background-color:#00FF00;
+    animation-name: bounce;
+    animation-duration: 1s;
+}
+.bien .popup-title {
+    color: black;
+    font-weight: bold;
+}
+
+.mal{
+    background-color:#FE2E2E;
+    animation-name: shake;
+    animation-duration: 1s;
+}
+.mal .popup-title {
+    color: black;
+    font-weight: bold;
+}
+
+.salida{
+
+}
+.salida .popup-title {
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 
 .login {
-    background-color: #F5DA81;
+    background-color: #F3830A;
 }
 
 .login-container {

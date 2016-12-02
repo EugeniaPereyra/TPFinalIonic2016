@@ -1,11 +1,8 @@
 <ion-view >
-  <ion-header-bar class="bar-balanced">
-    <h1 class="title">Login</h1>
-  </ion-header-bar>
   <ion-content class="login-container" scroll="true">
     <section >
       <div class="col header text-center">
-         <img src="../img/brain-2.png"/>
+         <img ng-src="img/{{imagen.foto}}" style="margin-top: 5%"/>
       </div>
       <div class="col" >
         <form name="formLogin" novalidate>
@@ -40,10 +37,14 @@
       </div>
     </section>
     <br/>
-    <center>
-    <button class="button button-assertive" style="width: 200px" ng-click="Administrador()"><i class="ion-android-contact"></i> Administrador</button>
-    <button class="button button-assertive" style="width: 200px" ng-click="JugadorUno()"><i class="ion-android-contact"></i> Jugador 1</button>
-    <button class="button button-assertive" style="width: 200px" ng-click="JugadorDos()"><i class="ion-android-contact"></i> Jugador 2</button>
-    </center>
+    <div class="col text-center">
+      <button class="button button-assertive" style="width: 200px" ng-click="Administrador()"><i class="ion-android-contact"></i> Administrador</button>
+    </div>
+    <div class="col text-center">
+      <button class="button button-assertive" style="width: 200px" ng-click="JugadorUno()"><i class="ion-android-contact"></i> Jugador 1</button>
+    </div>
+    <div class="col text-center">
+      <button class="button button-assertive" style="width: 200px" ng-click="JugadorDos()"><i class="ion-android-contact"></i> Jugador 2</button>
+    </div>
   </ion-content>
 </ion-view>
