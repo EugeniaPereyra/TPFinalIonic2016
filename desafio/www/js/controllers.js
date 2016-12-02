@@ -211,7 +211,12 @@ angular.module('starter.controllers', ['starter.factories'])
           // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
           if(firebase.auth().currentUser.uid == desafio.creador)
           {
-            $scope.showPopup('Nada!!','No hubo jugadores para el desafio "' + desafio.pregunta + '"');
+              $ionicPopup.alert({
+                title: 'NADA!!',
+                template: 'No hubo jugadores para el desafio',
+                cssClass:'salida',
+                okType: 'button-balanced'
+              });
           }
         }
         else{
@@ -223,7 +228,8 @@ angular.module('starter.controllers', ['starter.factories'])
             {
                var confirmPopup = $ionicPopup.confirm({
                  title: 'Tiempo de desafio agotado',
-                 template: 'El otro jugador gana?'
+                 template: 'El otro jugador gana?',
+                 cssClass:'salida'
                });
 
                confirmPopup.then(function(res) {
@@ -274,11 +280,21 @@ angular.module('starter.controllers', ['starter.factories'])
             {
               if(firebase.auth().currentUser.uid == desafio.quienGano)
               {
-                $scope.showPopup('Desafio ganado!!','Ganaste, muchas felicitaciones!!');
+                $ionicPopup.alert({
+                  title: 'BIEN!!',
+                  template: 'Ganaste, muchas felicitaciones!!',
+                  cssClass:'bien',
+                  okType: 'button-balanced'
+                });
               }
               else
               {
-                $scope.showPopup('Desafio perdido!!','La proxima será!!');
+                $ionicPopup.alert({
+                  title: 'MAL!!',
+                  template: 'Perdiste, hasta la próxima!!',
+                  cssClass:'mal',
+                  okType: 'button-balanced'
+                });
               }
             }
          }
@@ -438,7 +454,7 @@ angular.module('starter.controllers', ['starter.factories'])
         });
     }); 
 
-    function Computar(desafio, id){
+  function Computar(desafio, id){
     // NO COMPUTADOS
     if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
         // NO FUE ACEPTADO
@@ -467,7 +483,12 @@ angular.module('starter.controllers', ['starter.factories'])
           // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
           if(firebase.auth().currentUser.uid == desafio.creador)
           {
-            $scope.showPopup('Nada!!','No hubo jugadores para el desafio "' + desafio.pregunta + '"');
+              $ionicPopup.alert({
+                title: 'NADA!!',
+                template: 'No hubo jugadores para el desafio',
+                cssClass:'salida',
+                okType: 'button-balanced'
+              });
           }
         }
         else{
@@ -479,7 +500,8 @@ angular.module('starter.controllers', ['starter.factories'])
             {
                var confirmPopup = $ionicPopup.confirm({
                  title: 'Tiempo de desafio agotado',
-                 template: 'El otro jugador gana?'
+                 template: 'El otro jugador gana?',
+                 cssClass:'salida'
                });
 
                confirmPopup.then(function(res) {
@@ -530,11 +552,21 @@ angular.module('starter.controllers', ['starter.factories'])
             {
               if(firebase.auth().currentUser.uid == desafio.quienGano)
               {
-                $scope.showPopup('Desafio ganado!!','Ganaste, muchas felicitaciones!!');
+                $ionicPopup.alert({
+                  title: 'BIEN!!',
+                  template: 'Ganaste, muchas felicitaciones!!',
+                  cssClass:'bien',
+                  okType: 'button-balanced'
+                });
               }
               else
               {
-                $scope.showPopup('Desafio perdido!!','La proxima será!!');
+                $ionicPopup.alert({
+                  title: 'MAL!!',
+                  template: 'Perdiste, hasta la próxima!!',
+                  cssClass:'mal',
+                  okType: 'button-balanced'
+                });
               }
             }
          }
@@ -599,7 +631,12 @@ angular.module('starter.controllers', ['starter.factories'])
           // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
           if(firebase.auth().currentUser.uid == desafio.creador)
           {
-            $scope.showPopup('Nada!!','No hubo jugadores para el desafio "' + desafio.pregunta + '"');
+              $ionicPopup.alert({
+                title: 'NADA!!',
+                template: 'No hubo jugadores para el desafio',
+                cssClass:'salida',
+                okType: 'button-balanced'
+              });
           }
         }
         else{
@@ -611,7 +648,8 @@ angular.module('starter.controllers', ['starter.factories'])
             {
                var confirmPopup = $ionicPopup.confirm({
                  title: 'Tiempo de desafio agotado',
-                 template: 'El otro jugador gana?'
+                 template: 'El otro jugador gana?',
+                 cssClass:'salida'
                });
 
                confirmPopup.then(function(res) {
@@ -662,18 +700,28 @@ angular.module('starter.controllers', ['starter.factories'])
             {
               if(firebase.auth().currentUser.uid == desafio.quienGano)
               {
-                $scope.showPopup('Desafio ganado!!','Ganaste, muchas felicitaciones!!');
+                $ionicPopup.alert({
+                  title: 'BIEN!!',
+                  template: 'Ganaste, muchas felicitaciones!!',
+                  cssClass:'bien',
+                  okType: 'button-balanced'
+                });
               }
               else
               {
-                $scope.showPopup('Desafio perdido!!','La proxima será!!');
+                $ionicPopup.alert({
+                  title: 'MAL!!',
+                  template: 'Perdiste, hasta la próxima!!',
+                  cssClass:'mal',
+                  okType: 'button-balanced'
+                });
               }
             }
          }
        }
     }
   }
-
+  
   $scope.Terminado=function(desafio){
   }
 })
