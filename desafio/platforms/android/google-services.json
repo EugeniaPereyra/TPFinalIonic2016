@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "156549433397",
+    "firebase_url": "https://desafio-b6f65.firebaseio.com",
+    "project_id": "desafio-b6f65",
+    "storage_bucket": "desafio-b6f65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156549433397:android:67954361c8877f25",
+        "android_client_info": {
+          "package_name": "com.ionicframework.batalla399276"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156549433397-hj2ev8tcrrq7esj1p2qcvs564pclhpjd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhpiuBdeBjqGVNvG1CVypjvdPUGN-eMrU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156549433397:android:82dcf705526a2622",
+        "android_client_info": {
+          "package_name": "com.ionicframework.desafio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156549433397-hj2ev8tcrrq7esj1p2qcvs564pclhpjd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhpiuBdeBjqGVNvG1CVypjvdPUGN-eMrU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

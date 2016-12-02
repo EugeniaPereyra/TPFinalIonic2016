@@ -35,6 +35,13 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.barcodeScanner"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-fcm/www/FCMPlugin.js",
+        "id": "cordova-plugin-fcm.FCMPlugin",
+        "clobbers": [
+            "FCMPlugin"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -47,7 +54,8 @@ module.exports.metadata =
     "cordova-plugin-statusbar": "2.2.0",
     "cordova-plugin-whitelist": "1.3.0",
     "ionic-plugin-keyboard": "2.2.1",
-    "phonegap-plugin-barcodescanner": "6.0.3"
+    "phonegap-plugin-barcodescanner": "6.0.3",
+    "cordova-plugin-fcm": "1.1.5"
 };
 // BOTTOM OF METADATA
 });

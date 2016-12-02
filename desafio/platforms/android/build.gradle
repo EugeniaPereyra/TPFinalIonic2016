@@ -87,6 +87,7 @@ ext {
 
 // PLUGIN GRADLE EXTENSIONS START
 apply from: "phonegap-plugin-barcodescanner/tpfinalionic218461-barcodescanner.gradle"
+apply from: "cordova-plugin-fcm/tpfinalionic218461-FCMPlugin.gradle"
 // PLUGIN GRADLE EXTENSIONS END
 
 def hasBuildExtras = file('build-extras.gradle').exists()
@@ -304,3 +305,5 @@ for (def func : cdvPluginPostBuildExtras) {
 if (hasProperty('postBuildExtras')) {
     postBuildExtras()
 }
+
+apply plugin: 'com.google.gms.google-services'
