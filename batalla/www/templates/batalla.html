@@ -1,0 +1,41 @@
+<ion-view view-title="Nueva Batalla" class="pagina" >
+  <ion-content>
+  <div style="display: block; float: left;">
+    <label>{{NombreJugadorDos}}: </label> 
+    <strong>{{(UsuarioBatalla.batalla.quienJuega == currentUser.uid) ? 'Jugando' : 'Esperando'}}</strong>
+    
+  </div>
+  <div style="display: block; float: right;">
+    <label>{{NombreJugadorUno}}: </label> 
+    <strong>{{(UsuarioBatalla.batalla.quienJuega != currentUser.uid) ? 'Jugando' : 'Esperando'}}</strong>
+  </div>
+
+  <center>
+    <div class="item" style="width: 100%; overflow: normal;">
+      <div class="card" layout-fill layout="column">
+        <div><strong>currentUser.uid: {{currentUser.uid}}</strong></div>
+        <div><strong>Etapa del juego: {{UsuarioBatalla.batalla.etapa}}</strong></div>
+        <div><strong>{{mensaje}}</strong></div>
+        <br>
+        <div style="flex: 50;" layout="row" layout-wrap>
+          <ng-repeat ng-repeat="row in getCasilleros(currentUser.uid) track by row.id ">
+            <button class="button button-outline button-dark" style="width: 50%;" id="btn_{{ row.id }}" ng-click="Seleccionar($event)" ng-class="{marcado:getClass(row.id)}">
+              Casillero {{row.id}}
+              <br>
+              {{row.marcado}}
+            </button>
+
+          </ng-repeat>
+        </div>
+        <br>
+        <br>
+      </div>
+      
+      <button class="button button-large button-outline button-balanced" ng-click="Aceptar()" ng-if="currentUser.uid == UsuarioBatalla.batalla.quienJuega">
+        Listo
+      </button>
+
+    </div>
+	</center>
+  </ion-content>
+</ion-view>

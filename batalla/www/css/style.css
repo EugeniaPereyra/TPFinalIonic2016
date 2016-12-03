@@ -1,1 +1,199 @@
+.marcado {
+    background-color: blue !important;
+}
+
 /* Empty. Add your own CSS if you like */
+.ng-hide-add         { animation:0.5s fadeOutUp ease; }
+
+/* when showing the picture */
+.ng-hide-remove      { animation:0.5s fadeInDown ease; }
+
+
+.login {
+    background-color: #F5DA81;
+}
+
+.login-container {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    height: 100%;
+  
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d7f0e6), color-stop(100%,#cfdfd9));
+    background: -webkit-linear-gradient(top, #d7f0e6 0%,#cfdfd9 100%);
+}
+.login-container img {
+    max-width: 100%;
+    min-width: 230px;
+}
+.login-container .button {
+    width: 100%;
+    max-width: 60%;
+    min-width: 230px;
+}
+.pagina{
+	background-color: #d7f0e6;
+}
+
+.autor{
+    background-color: #F5A9D0;
+}
+
+.side{
+	background-color: #BEF781;
+}
+
+h2{
+        color:darkblue;
+        text-align: center;
+}
+
+h4{
+        text-align: center;
+}
+
+p{
+        color:darkblue;
+        text-align: center;
+        font-size: 16px;
+}
+
+ion-icon{
+    color:black;
+    font-size: 20px;
+}
+
+.flex-grid {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  height: 500px;
+
+}
+
+.grid-item {
+
+  flex: 1 1 calc(100% - 50px);
+
+  background: #F90;
+
+  border-top: solid 1px #000;
+
+}
+
+.grid-item:nth-child(odd) {
+
+  background: #F00;
+
+  flex: 0 0 50px;
+
+}
+
+
+/*-------------------------------*/
+/*     Sidebar nav styles        */
+/*-------------------------------*/
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 220px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav ion-item {
+    position: relative; 
+    line-height: 20px;
+    display: inline-block;
+    width: 100%;
+}
+
+.sidebar-nav ion-item:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3px;
+    background-color: #FF5722;
+    -webkit-transition: width .2s ease-in;
+      -moz-transition:  width .2s ease-in;
+       -ms-transition:  width .2s ease-in;
+            transition: width .2s ease-in;
+
+}
+.sidebar-nav ion-item:first-child a {
+    color: #fff;
+    background-color: #3401ff;
+}
+.sidebar-nav ion-item:nth-child(2):before {
+    background-color: #ec1b5a;   
+}
+.sidebar-nav ion-item:nth-child(3):before {
+    background-color: #79aefe;   
+}
+.sidebar-nav ion-item:nth-child(4):before {
+    background-color: #314190;   
+}
+.sidebar-nav ion-item:nth-child(5):before {
+    background-color: #279636;   
+}
+.sidebar-nav ion-item:nth-child(6):before {
+    background-color: #7d5d81;   
+}
+.sidebar-nav ion-item:nth-child(7):before {
+    background-color: #ead24c;   
+}
+.sidebar-nav ion-item:nth-child(8):before {
+    background-color: #2d2366;   
+}
+.sidebar-nav ion-item:nth-child(9):before {
+    background-color: #35acdf;   
+}
+.sidebar-nav ion-item:hover:before,
+.sidebar-nav ion-item.open:hover:before {
+    width: 100%;
+    -webkit-transition: width .2s ease-in;
+      -moz-transition:  width .2s ease-in;
+       -ms-transition:  width .2s ease-in;
+            transition: width .2s ease-in;
+
+}
+
+.sidebar-nav ion-item a {
+    display: block;
+    color: #ddd;
+    text-decoration: none;
+    padding: 10px 15px 10px 30px;    
+}
+
+.sidebar-nav ion-item a:hover,
+.sidebar-nav ion-item a:active,
+.sidebar-nav ion-item a:focus,
+.sidebar-nav ion-item.open a:hover,
+.sidebar-nav ion-item.open a:active,
+.sidebar-nav ion-item.open a:focus{
+    color: #fff;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 20px;
+    line-height: 44px;
+}
+.sidebar-nav .dropdown-menu {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    background-color: #222;
+    box-shadow: none;
+}

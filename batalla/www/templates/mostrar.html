@@ -1,0 +1,24 @@
+<ion-view view-title="{{titulo}}" class="pagina" >
+  <ion-content>
+      <ion-list>
+        <div ng-repeat="usuario in usuarios | filter: { online: '!!' } as results">
+            <div ng-show="usuario.$id != userID && usuario.online">
+              <br>
+              <ion-item class="item-thumbnail-left" ng-click="desafiar(usuario)" >
+                  <img ng-src="img/brain-2.png" style="width: 50px; height: 50px;" />
+                  <h2>{{usuario.nombre}}</h2>
+                  <br>
+                  <p>{{usuario.credito}}</p>
+              </ion-item>
+            </div>
+            <p>results.length{{results.length}}</p>
+            <div ng-if="(results.length -1) === 0">
+              <ion-item>
+                <h2>Parece que no hay usuarios conectados, invitalos a unirse!</h2>
+              </ion-item>
+            </div>
+        </div>
+        
+       </ion-list>
+  </ion-content>
+</ion-view>
