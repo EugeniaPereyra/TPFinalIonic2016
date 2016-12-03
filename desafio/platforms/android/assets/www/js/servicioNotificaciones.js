@@ -14,7 +14,7 @@ angular.module('push.servicio', ["firebase"])
         var url = getURL();
         var params = JSON.stringify(
                                     {
-                                      to:"/topics/desafio",
+                                      to:"/topics/"+uid,
                                       notification:{
                                                       title : title,
                                                       body : body,

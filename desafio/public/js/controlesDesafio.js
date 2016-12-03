@@ -9,6 +9,7 @@ angular.module('desafio.controllers', [])
   $scope.desafio.jugador="";
   $scope.desafio.valor=50;
   $scope.desafio.quienGano="";
+  $scope.desafio.quienPerdio="";
   //$scope.desafio.respuestaElegida = "";
   
   

@@ -153,12 +153,12 @@ angular.module('starter.controllers', [])
   }
 
   $scope.JugadorUno=function(){
-    $scope.loginData.username="utn@utn.com";
+    $scope.loginData.username="mauge@mauge.com";
     $scope.loginData.password="123456";
   }
 
   $scope.JugadorDos=function(){
-    $scope.loginData.username="usr@usr.com";
+    $scope.loginData.username="diego@diego.com";
     $scope.loginData.password="123456";
   }
 })

@@ -17,6 +17,7 @@ angular.module('grillas.controllers', [])
           var id=snapshot.key;
           if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0)
           {
+
             Computar(desafio, id); 
           }
           else
@@ -54,6 +55,7 @@ angular.module('grillas.controllers', [])
                         jugador: desafio.jugador,
                         valor: desafio.valor,
                         quienGano: desafio.quienGano,
+                        quienPerdio: desafio.quienPerdio,
                         fechaInicio: desafio.fechaInicio,
                         fechaFin: desafio.fechaFin,
                         pregunta: desafio.pregunta 
@@ -79,7 +81,6 @@ angular.module('grillas.controllers', [])
           // FUE ACEPTADO
           if(desafio.jugador)
           {
-            NotificationService.sendNotification(desafio.creador,"DesafíaMente","Un desafío terminó con resultados");
             // SI ES EL CREADOR DEBE DECIDIR QUIEN GANA
             if(firebase.auth().currentUser.uid == desafio.creador)
             {
@@ -94,6 +95,8 @@ angular.module('grillas.controllers', [])
                   UsuarioService.getById(desafio.jugador).then(function(respuesta){
                     //console.info(respuesta);
                     var usuario=respuesta;
+                    NotificationService.sendNotification(desafio.creador,"DesafíaMente",usuario.nombre+" ganó el desafío");
+                    NotificationService.sendNotification(desafio.jugador,"DesafíaMente",usuario.nombre+" ganó el desafío");
                     usuario.credito += (parseInt(desafio.valor) * 2);
                     UsuarioService.save(usuario);
                     var desf = firebase.database().ref().child('DESAFIOS/' + id);
@@ -103,6 +106,7 @@ angular.module('grillas.controllers', [])
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
                                 quienGano: desafio.jugador,
+                                quienPerdio: desafio.creador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -114,6 +118,8 @@ angular.module('grillas.controllers', [])
                   UsuarioService.getById(desafio.creador).then(function(respuesta){
                     //console.info(respuesta);
                     var usuario=respuesta;
+                    NotificationService.sendNotification(desafio.creador,"DesafíaMente",usuario.nombre+" perdió el desafío");
+                    NotificationService.sendNotification(desafio.jugador,"DesafíaMente",usuario.nombre+" perdió el desafío");
                     $scope.usuario.credito += (parseInt(desafio.valor)*2);
                     UsuarioService.save(usuario);
                     var desf = firebase.database().ref().child('DESAFIOS/' + id);
@@ -123,6 +129,7 @@ angular.module('grillas.controllers', [])
                                 jugador: desafio.jugador,
                                 valor: desafio.valor,
                                 quienGano: desafio.creador,
+                                quienPerdio: desafio.jugador,
                                 fechaInicio: desafio.fechaInicio,
                                 fechaFin: desafio.fechaFin,
                                 pregunta: desafio.pregunta 
@@ -132,29 +139,6 @@ angular.module('grillas.controllers', [])
                   })
                  }
                })
-            }
-            if(desafio.quienGano != "")
-            {
-              if(firebase.auth().currentUser.uid == desafio.quienGano)
-              {
-                ReproducirPositivo();
-                $ionicPopup.alert({
-                  title: 'BIEN!!',
-                  template: 'Ganaste, muchas felicitaciones!!',
-                  cssClass:'bien',
-                  okType: 'button-balanced'
-                });
-              }
-              else
-              {
-                ReproducirNegativo();
-                $ionicPopup.alert({
-                  title: 'MAL!!',
-                  template: 'Perdiste, hasta la próxima!!',
-                  cssClass:'mal',
-                  okType: 'button-balanced'
-                });
-              }
             }
          }
        }
@@ -220,16 +204,9 @@ angular.module('grillas.controllers', [])
         $timeout(function(){
           var desafio = snapshot.val();
           var id=snapshot.key;
-          if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0)
-          {
-            Computar(desafio, id); 
-          }
-          else
-          {
-            $scope.datos.push(desafio);
-          }  
+            $scope.datos.push(desafio); 
         });
-    });
+    });  
   }
   catch(err)
   {
@@ -238,159 +215,12 @@ angular.module('grillas.controllers', [])
               cssClass:'salida',
               okType: 'button-energized',
           });
-  } 
-
-  function Computar(desafio, id){
-    // NO COMPUTADOS
-    if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
-        // NO FUE ACEPTADO
-        if(desafio.jugador == '') {
-          NotificationService.sendNotification(desafio.creador,"DesafíaMente","Un desafío terminó sin resultados");
-          UsuarioService.getById(desafio.creador).then(function(respuesta){
-            var usuario=respuesta;
-            usuario.credito += parseInt(desafio.valor);
-            UsuarioService.save(usuario);
-            desafio.disponible=false;
-            desafio.computado=true;
-            var desf = firebase.database().ref().child('DESAFIOS/' + id);
-            desf.set( { creador: desafio.creador, 
-                        disponible: false,
-                        computado: true,
-                        jugador: desafio.jugador,
-                        valor: desafio.valor,
-                        quienGano: desafio.quienGano,
-                        fechaInicio: desafio.fechaInicio,
-                        fechaFin: desafio.fechaFin,
-                        pregunta: desafio.pregunta 
-                      }, function(error){
-                        console.log(error); 
-                    });          
-          })
-
-          // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
-          if(firebase.auth().currentUser.uid == desafio.creador)
-          {
-            ReproducirPositivo();
-              $ionicPopup.alert({
-                title: 'NADA!!',
-                template: 'No hubo jugadores para el desafio',
-                cssClass:'salida',
-                okType: 'button-balanced'
-              });
-
-          }
-        }
-        else{
-          // FUE ACEPTADO
-          if(desafio.jugador)
-          {
-            NotificationService.sendNotification(desafio.creador,"DesafíaMente","Un desafío terminó con resultados");
-            // SI ES EL CREADOR DEBE DECIDIR QUIEN GANA
-            if(firebase.auth().currentUser.uid == desafio.creador)
-            {
-               var confirmPopup = $ionicPopup.confirm({
-                 title: 'Tiempo de desafio agotado',
-                 template: 'El otro jugador gana?',
-                 cssClass:'salida'
-               });
-
-               confirmPopup.then(function(res) {
-                 if(res) {
-                  UsuarioService.getById(desafio.jugador).then(function(respuesta){
-                    //console.info(respuesta);
-                    var usuario=respuesta;
-                    usuario.credito += (parseInt(desafio.valor) * 2);
-                    UsuarioService.save(usuario);
-                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
-                    desf.set( { creador: desafio.creador, 
-                                disponible: false,
-                                computado: true,
-                                jugador: desafio.jugador,
-                                valor: desafio.valor,
-                                quienGano: desafio.jugador,
-                                fechaInicio: desafio.fechaInicio,
-                                fechaFin: desafio.fechaFin,
-                                pregunta: desafio.pregunta 
-                              }, function(error){
-                                console.log(error); 
-                            });           
-                  })
-                 } else {
-                  UsuarioService.getById(desafio.creador).then(function(respuesta){
-                    //console.info(respuesta);
-                    var usuario=respuesta;
-                    $scope.usuario.credito += (parseInt(desafio.valor)*2);
-                    UsuarioService.save(usuario);
-                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
-                    desf.set( { creador: desafio.creador, 
-                                disponible: false,
-                                computado: true,
-                                jugador: desafio.jugador,
-                                valor: desafio.valor,
-                                quienGano: desafio.creador,
-                                fechaInicio: desafio.fechaInicio,
-                                fechaFin: desafio.fechaFin,
-                                pregunta: desafio.pregunta 
-                              }, function(error){
-                                console.log(error); 
-                            }); 
-                  })
-                 }
-               })
-            }
-            if(desafio.quienGano != "")
-            {
-              if(firebase.auth().currentUser.uid == desafio.quienGano)
-              {
-                ReproducirPositivo();
-                $ionicPopup.alert({
-                  title: 'BIEN!!',
-                  template: 'Ganaste, muchas felicitaciones!!',
-                  cssClass:'bien',
-                  okType: 'button-balanced'
-                });
-              }
-              else
-              {
-                ReproducirNegativo();
-                $ionicPopup.alert({
-                  title: 'MAL!!',
-                  template: 'Perdiste, hasta la próxima!!',
-                  cssClass:'mal',
-                  okType: 'button-balanced'
-                });
-              }
-            }
-         }
-       }
-    }
   }
 
-    function ReproducirPositivo(){
-      try
-      {
-        $cordovaVibration.vibrate(200);
-        $cordovaNativeAudio.play('si');
-      }
-      catch(e)
-      {
-        console.log("La vibracion y el sonido, solo funcionan en celulares");
-      }
-    }
-
-    function ReproducirNegativo(){
-      try
-      {
-        $cordovaVibration.vibrate([200,200,200]);
-        $cordovaNativeAudio.play('no');
-      }
-      catch(e)
-      {
-        console.log("La vibracion y el sonido, solo funcionan en celulares");
-      }
-    }
-
-  $scope.Terminado=function(desafio){
+  $scope.Borrar=function(index){
+    DesafioService.getByIndex(index).then(function(respuesta){
+      DesafioService.remove(respuesta);
+    });
   }
 })
 
@@ -408,16 +238,9 @@ angular.module('grillas.controllers', [])
         $timeout(function(){
           var desafio = snapshot.val();
           var id=snapshot.key;
-          if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0)
-          {
-            Computar(desafio, id); 
-          }
-          else
-          {
-            $scope.datos.push(desafio);
-          }  
+            $scope.datos.push(desafio); 
         });
-    });
+    }); 
   }
   catch(err)
   {
@@ -428,156 +251,6 @@ angular.module('grillas.controllers', [])
           });
   }
 
-  function Computar(desafio, id){
-    // NO COMPUTADOS
-    if(!desafio.computado && ((desafio.fechaFin - $scope.DateNow) / 1000)<=0){
-        // NO FUE ACEPTADO
-        if(desafio.jugador == '') {
-          NotificationService.sendNotification(desafio.creador,"DesafíaMente","Un desafío terminó sin resultados");
-          UsuarioService.getById(desafio.creador).then(function(respuesta){
-            var usuario=respuesta;
-            usuario.credito += parseInt(desafio.valor);
-            UsuarioService.save(usuario);
-            desafio.disponible=false;
-            desafio.computado=true;
-            var desf = firebase.database().ref().child('DESAFIOS/' + id);
-            desf.set( { creador: desafio.creador, 
-                        disponible: false,
-                        computado: true,
-                        jugador: desafio.jugador,
-                        valor: desafio.valor,
-                        quienGano: desafio.quienGano,
-                        fechaInicio: desafio.fechaInicio,
-                        fechaFin: desafio.fechaFin,
-                        pregunta: desafio.pregunta 
-                      }, function(error){
-                        console.log(error); 
-                    });          
-          })
-
-          // SI ES EL CREADOR SE LE MUESTRA UN MENSAJE INFORMANDO
-          if(firebase.auth().currentUser.uid == desafio.creador)
-          {
-            ReproducirPositivo();
-              $ionicPopup.alert({
-                title: 'NADA!!',
-                template: 'No hubo jugadores para el desafio',
-                cssClass:'salida',
-                okType: 'button-balanced'
-              });
-
-          }
-        }
-        else{
-          // FUE ACEPTADO
-          if(desafio.jugador)
-          {
-            NotificationService.sendNotification(desafio.creador,"DesafíaMente","Un desafío terminó con resultados");
-            // SI ES EL CREADOR DEBE DECIDIR QUIEN GANA
-            if(firebase.auth().currentUser.uid == desafio.creador)
-            {
-               var confirmPopup = $ionicPopup.confirm({
-                 title: 'Tiempo de desafio agotado',
-                 template: 'El otro jugador gana?',
-                 cssClass:'salida'
-               });
-
-               confirmPopup.then(function(res) {
-                 if(res) {
-                  UsuarioService.getById(desafio.jugador).then(function(respuesta){
-                    //console.info(respuesta);
-                    var usuario=respuesta;
-                    usuario.credito += (parseInt(desafio.valor) * 2);
-                    UsuarioService.save(usuario);
-                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
-                    desf.set( { creador: desafio.creador, 
-                                disponible: false,
-                                computado: true,
-                                jugador: desafio.jugador,
-                                valor: desafio.valor,
-                                quienGano: desafio.jugador,
-                                fechaInicio: desafio.fechaInicio,
-                                fechaFin: desafio.fechaFin,
-                                pregunta: desafio.pregunta 
-                              }, function(error){
-                                console.log(error); 
-                            });           
-                  })
-                 } else {
-                  UsuarioService.getById(desafio.creador).then(function(respuesta){
-                    //console.info(respuesta);
-                    var usuario=respuesta;
-                    $scope.usuario.credito += (parseInt(desafio.valor)*2);
-                    UsuarioService.save(usuario);
-                    var desf = firebase.database().ref().child('DESAFIOS/' + id);
-                    desf.set( { creador: desafio.creador, 
-                                disponible: false,
-                                computado: true,
-                                jugador: desafio.jugador,
-                                valor: desafio.valor,
-                                quienGano: desafio.creador,
-                                fechaInicio: desafio.fechaInicio,
-                                fechaFin: desafio.fechaFin,
-                                pregunta: desafio.pregunta 
-                              }, function(error){
-                                console.log(error); 
-                            }); 
-                  })
-                 }
-               })
-            }
-            if(desafio.quienGano != "")
-            {
-              if(firebase.auth().currentUser.uid == desafio.quienGano)
-              {
-                ReproducirPositivo();
-                $ionicPopup.alert({
-                  title: 'BIEN!!',
-                  template: 'Ganaste, muchas felicitaciones!!',
-                  cssClass:'bien',
-                  okType: 'button-balanced'
-                });
-              }
-              else
-              {
-                ReproducirNegativo();
-                $ionicPopup.alert({
-                  title: 'MAL!!',
-                  template: 'Perdiste, hasta la próxima!!',
-                  cssClass:'mal',
-                  okType: 'button-balanced'
-                });
-              }
-            }
-         }
-       }
-    }
-  }
-
-    function ReproducirPositivo(){
-      try
-      {
-        $cordovaVibration.vibrate(200);
-        $cordovaNativeAudio.play('si');
-      }
-      catch(e)
-      {
-        console.log("La vibracion y el sonido, solo funcionan en celulares");
-      }
-    }
-
-    function ReproducirNegativo(){
-      try
-      {
-        $cordovaVibration.vibrate([200,200,200]);
-        $cordovaNativeAudio.play('no');
-      }
-      catch(e)
-      {
-        console.log("La vibracion y el sonido, solo funcionan en celulares");
-      }
-    }
-  
   $scope.Borrar=function(index){
     DesafioService.getByIndex(index).then(function(respuesta){
       DesafioService.remove(respuesta);
