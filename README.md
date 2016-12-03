@@ -7,5 +7,8 @@ juego online, Generador de desafíos / batalla naval
 <li><strong>firebase-hosting:</strong> https://desafio-b6f65.firebaseapp.com</li>
 <li><strong>ionic-view:</strong> 6a690d6e</li>
 <br/><br/>
+<h3>BATALLA:</h3>
+<li><strong>ionic-view:</strong> 3e98b75b</li>
+<br/><br/>
 
 
