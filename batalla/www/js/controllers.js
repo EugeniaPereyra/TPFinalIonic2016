@@ -1,6 +1,8 @@
 angular.module('starter.controllers', ['starter.factories'])
 
-.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, $timeout, UsuarioBatallaService, serviceWorkerService, NotificationService ) {
+.controller('controlLogin', function($scope, $state, $ionicLoading, $ionicPopup, $timeout, UsuarioBatallaService, NotificationService ) {
+  $scope.imagen={};
+  $scope.imagen.foto="Pirate-Ship.png";
 
   $scope.showLoading = function(textoParam) {
     if (textoParam)
@@ -22,14 +24,14 @@ angular.module('starter.controllers', ['starter.factories'])
   };
 
   $scope.showPopup = function(titleParam, templateParam, okTypeParam){
-    $ionicPopup.alert({
+    return $ionicPopup.alert({
       title: titleParam,
       template: templateParam,
       okType: okTypeParam
     });
   };
   $scope.showPopup = function(titleParam, templateParam){
-    $ionicPopup.alert({
+    return $ionicPopup.alert({
       title: titleParam,
       template: templateParam
     });
@@ -42,6 +44,10 @@ angular.module('starter.controllers', ['starter.factories'])
   };
 
   $scope.loginData = {};
+  var usuarios=[];
+  var puente = [];
+  var encontrado = false;
+  var usuario={};
 
   $scope.Loguear = function() {
     // Start showing the progress
@@ -50,93 +56,68 @@ angular.module('starter.controllers', ['starter.factories'])
     
     firebase.auth().signInWithEmailAndPassword($scope.loginData.username,$scope.loginData.password)
         .then(function(respuesta){
-    
+          //console.info("Respuesta: ",respuesta);
           $scope.loginData.username="";
           $scope.loginData.password="";
-          $scope.hideLoading();
 
-
-
-          try {
-            // ES ANDROID
-                      var tokenID;
-
-                    FCMPlugin.getToken(
-                        function (token) {
-                            //alert('Token: ' + token);
-                            console.log('Token: ' + token);
-                        },
-                        function (err) {
-                            //alert('error retrieving token: ' + token);
-                            console.log('error retrieving token: ' + err);
-                        }
-                    );
-
-                    FCMPlugin.subscribeToTopic(respuesta.uid);
-          }
-          catch (err) {
-            // ES WEB
-                    serviceWorkerService.registerWorker();
-                    serviceWorkerService.subscribe(function(){}, function(){}, function(token){
-                      /*
-                      UsuarioBatallaService.getByUserId(respuesta.uid).then(function(respuesta){
-                          respuesta.token = token;
-
-                          UsuarioBatallaService.saveById(respuesta.$id);
-
-                        },function(error){
-                          console.log(error);
-                      })*/
-
-                    }, 
-                    function(mensaje){
-                      $scope.showPopup('Mensaje entrante', 'Mensaje: ' + mensaje);
-                    }); 
-
-
-          }
-  
-          // SI EL USUARIO NO EXISTE O TIENE UNA BATALLA LE CREO UNA
-          UsuarioBatallaService.getByUserId(respuesta.uid).then(function(resp){
-                //console.info('Obtengo el usuario que inicio sesion para ver si tengo que crearle una batalla');
-                //console.log(resp);
-                
-                if (!resp) {
-                  var usuario = {};
-                  usuario.id = respuesta.uid;
-                  usuario.credito = 1000;
-                  usuario.primerInicio = true;
-                  usuario.nombre = respuesta.email;
-                  usuario.email = respuesta.email;
-
-                  
-                  UsuarioBatallaService.add(usuario);
-                  //console.log("usuario agregado");
-                }
-                else {
-                  if (!resp.batalla) {
-                    UsuarioBatallaService.addNewBatalla(respuesta.uid);
-                  }
-                }
-
-                // PONGO EL USUARIO COMO ONLINE
-                UsuarioBatallaService.setOnline(respuesta.uid);
-
-              },function(error){
-                console.log(error);
+          $scope.UsuarioLogueado=firebase.auth().currentUser;
+          UsuarioBatallaService.getAll().then(function(respuesta){
+            puente=respuesta;
+            usuarios=puente.map(function(dato){
+              if(dato.$id==$scope.UsuarioLogueado.uid)
+              {
+                encontrado=true;
+                usuario=dato;
+              }
             })
-          
-
+            $scope.hideLoading();
+            if(encontrado)
+            {
+              try {
+                   FCMPlugin.subscribeToTopic($scope.UsuarioLogueado.uid);
+              }
+              catch (err) {
+                  // ES WEB
+                  console.log("LOS PLUGINS SOLO FUNCIONA EN CELULARES");
+              }
+              if(!usuario.batalla)
+              {
+                 UsuarioBatallaService.addNewBatalla(respuesta.uid);
+              }
+              UsuarioBatallaService.setOnline(respuesta.uid);
+              $state.go('app.mostrar');
+            }
+            else
+            {
+              $scope.UsuarioLogueado=firebase.auth().currentUser;
+              var usuario = {};
+              usuario.id = firebase.auth().currentUser.uid;
+              usuario.credito = 1000;
+              usuario.primerInicio = true;
+              usuario.nombre = firebase.auth().currentUser.email;
+              usuario.email=firebase.auth().currentUser.email;
+              
+              UsuarioBatallaService.add(usuario);
+              UsuarioBatallaService.setOnline(usuario.id);
+              console.log("usuario agregado");
+              try {
+                   FCMPlugin.subscribeToTopic($scope.UsuarioLogueado.uid);
+              }
+              catch (err) {
+                  // ES WEB
+                  console.log("LOS PLUGINS SOLO FUNCIONA EN CELULARES");
+              }
+            }
+            $state.go('app.mostrar');
+          })
 
           //if(firebase.auth().currentUser.emailVerified)
           //{
-            $state.go('app.mostrar');
           //}
           //else
           //{
           //  Verificar();
           //}
-          
         })
         .catch(function(error){
           console.info("Error: ",error);
@@ -144,6 +125,7 @@ angular.module('starter.controllers', ['starter.factories'])
           $scope.showPopup('Error', 'Usuario y/o password incorrectos!');
         });
   };
+          
 
   $scope.Crear = function() {
     // Start showing the progress
@@ -248,6 +230,21 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.Autor = function(){
     $state.go('app.autor');
   }
+
+  $scope.Administrador=function(){
+    $scope.loginData.username="admin@admin.com";
+    $scope.loginData.password="123123";
+  }
+
+  $scope.JugadorUno=function(){
+    $scope.loginData.username="mauge@mauge.com";
+    $scope.loginData.password="123456";
+  }
+
+  $scope.JugadorDos=function(){
+    $scope.loginData.username="diego@diego.com";
+    $scope.loginData.password="123456";
+  }
 })
 
 .controller('controlMostrar', function($scope, $state, $ionicPopup, $timeout, UsuarioBatallaService) {
@@ -258,10 +255,11 @@ angular.module('starter.controllers', ['starter.factories'])
   $scope.primerVez = 1;
   $scope.MostrarNoHayUsuarios = false;
   $scope.idjugadorDos = '';
-
+  $scope.imagen={};
+  $scope.imagen.foto="pirate-flag.png";
+  
   $scope.showLoading();
 
-  /* ----- SE PUEDE BORRAR -----*/
   UsuarioBatallaService.getAll().then(function(respuesta){
       //console.info('Obtengo todos los usuarios');
       //console.log(respuesta);
@@ -282,7 +280,7 @@ angular.module('starter.controllers', ['starter.factories'])
 
   $scope.hideLoading();  
 
-  $scope.$watch('UsuarioBatalla.batalla.jugadorDos', function(new_fieldcontainer, old_fieldcontainer) {
+  $scope.$watch('UsuarioBatalla.batalla.jugadorDos', function() {
       if ($scope.UsuarioBatalla.batalla && $scope.UsuarioBatalla.batalla.jugadorDos.id && !$scope.UsuarioBatalla.batalla.aceptada) {
         
         /* Cargo los datos del jugador desafiante para mostrar el mensaje */
@@ -375,13 +373,15 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 })
 
-.controller('controlBatalla', function($scope, $ionicPopup, $state, $stateParams, $timeout, UsuarioBatallaService, $filter) {
+.controller('controlBatalla', function($scope, $ionicPopup, $state, $stateParams, $timeout, UsuarioBatallaService, $filter, $ionicLoading, NotificationService) {
   var IdBatalla = $stateParams.Id;
   $scope.currentUser = firebase.auth().currentUser;
-  $scope.mensaje = "Seleccione sobre que botón desea colocar su apuesta";
+  $scope.mensaje = "Decidí cuanto apostar y sobre que casillero";
   $scope.UsuarioBatalla = {};
   $scope.NombreJugadorUno = 'Jugador 1';
   $scope.NombreJugadorDos = 'Jugador 2';
+  $scope.valor = {};
+  $scope.valor.apuesta = 0;
   $scope.primerVez = 1;
 
   /* TRAE LA BATALLA QUE SE GENERO EN EL PASO ANTERIOR */
@@ -407,15 +407,17 @@ angular.module('starter.controllers', ['starter.factories'])
       return;
     }
 
-    $scope.MostrarEspera($scope.UsuarioBatalla.batalla.quienJuega != $scope.currentUser.uid); //falta configurar un timer
-    
-    if ($scope.currentUser.uid == $scope.UsuarioBatalla.batalla.jugadorUno.id) {
-      $scope.currentUser.uid = $scope.UsuarioBatalla.batalla.jugadorDos.id;
+    if (!$scope.UsuarioBatalla.batalla.quienGano)
+    {
+      $scope.MostrarEspera($scope.UsuarioBatalla.batalla.quienJuega != $scope.currentUser.uid); //falta configurar un timer
+        
+      if ($scope.currentUser.uid == $scope.UsuarioBatalla.batalla.jugadorUno.id) {
+        $scope.currentUser.uid = $scope.UsuarioBatalla.batalla.jugadorDos.id;
+      }
+      else {
+        $scope.currentUser.uid = $scope.UsuarioBatalla.batalla.jugadorUno.id; 
+      }
     }
-    else {
-      $scope.currentUser.uid = $scope.UsuarioBatalla.batalla.jugadorUno.id; 
-    }
-
   });
 
   /* OBTIENE LOS CASILLEROS CON LOS QUE DEBE DIBUJAR LOS BOTONES EN LA VISTA */
@@ -494,6 +496,7 @@ angular.module('starter.controllers', ['starter.factories'])
   }
 
   $scope.Aceptar = function(){
+    
     if ($scope.currentUser.uid == $scope.UsuarioBatalla.batalla.jugadorUno.id) {
       $scope.UsuarioBatalla.batalla.quienJuega = $scope.UsuarioBatalla.batalla.jugadorDos.id;
     }
@@ -502,9 +505,15 @@ angular.module('starter.controllers', ['starter.factories'])
     }
 
     // SI ES LA 1° RONDA Y ES EL JUGADOR 2 HAY QUE CAMBIAR EL MODO DE JUEGO
-    if ($scope.UsuarioBatalla.batalla.etapa == 1 && $scope.currentUser.uid == $scope.UsuarioBatalla.batalla.jugadorUno.id) 
-    {
-      $scope.UsuarioBatalla.batalla.etapa = 2;
+    if ($scope.UsuarioBatalla.batalla.etapa == 1) {
+      if ($scope.currentUser.uid == $scope.UsuarioBatalla.batalla.jugadorUno.id) 
+      {
+        $scope.UsuarioBatalla.batalla.jugadorUno.valorApuesta = $scope.valor.apuesta;
+        $scope.UsuarioBatalla.batalla.etapa = 2;
+      }
+      else {
+        $scope.UsuarioBatalla.batalla.jugadorDos.valorApuesta = $scope.valor.apuesta;
+      }
     }
 
     if ($scope.UsuarioBatalla.batalla.etapa == 2) {
@@ -530,134 +539,88 @@ angular.module('starter.controllers', ['starter.factories'])
       }
     }
 
-    UsuarioBatallaService.saveById($scope.UsuarioBatalla.$id);  
+    UsuarioBatallaService.saveById($scope.UsuarioBatalla.$id);
   }
 
   $scope.$watch('UsuarioBatalla.batalla.quienGano', function(){
     if($scope.UsuarioBatalla.batalla.quienGano){
-      $scope.MostrarEspera(false);
-      if ($scope.currentUser.uid == $scope.UsuarioBatalla.batalla.quienGano) {
-        $scope.showPopup('Ganaste la batalla', 'Felicitaciones! Has acertado al casillero elegido por tu contrincante antes de que él acerte al tuyo!');
-      }
-      else {
-        $scope.showPopup('Perdiste la batalla', 'Han acertado a tu casillero! La próxima seguro tendrás mas suerte.');
-      }
+      if ($scope.UsuarioBatalla.batalla.quienGano == $scope.UsuarioBatalla.batalla.jugadorUno.id){
+          UsuarioBatallaService.getByUserId($scope.UsuarioBatalla.batalla.jugadorUno.id).then(function(respuesta){ //el id de batalla es el mismo que el de usr
+              console.log(respuesta);
+              respuesta.credito += parseInt($scope.UsuarioBatalla.batalla.jugadorDos.valorApuesta);
 
-      $state.go('app.mostrar');
+              UsuarioBatallaService.saveById(respuesta.$id);
+            },function(error){
+              console.log(error);
+          });
+          UsuarioBatallaService.getByUserId($scope.UsuarioBatalla.batalla.jugadorDos.id).then(function(respuesta){ //el id de batalla es el mismo que el de usr
+              console.log(respuesta);
+              respuesta.credito -= parseInt($scope.UsuarioBatalla.batalla.jugadorDos.valorApuesta);
 
-      // SE LIMPIA LA BATALLA PISANDOLA CON UNA NUEVA
-      UsuarioBatallaService.addNewBatalla($scope.UsuarioBatalla.batalla.jugadorUno.id);
+              UsuarioBatallaService.saveById(respuesta.$id);
+            },function(error){
+              console.log(error);
+          });
+        }
+        else{
+          UsuarioBatallaService.getByUserId($scope.UsuarioBatalla.batalla.jugadorDos.id).then(function(respuesta){ //el id de batalla es el mismo que el de usr
+              console.log(respuesta);
+              respuesta.credito += parseInt($scope.UsuarioBatalla.batalla.jugadorUno.valorApuesta);
+                UsuarioBatallaService.saveById(respuesta.$id);
+                UsuarioBatallaService.getByUserId($scope.UsuarioBatalla.batalla.jugadorUno.id).then(function(respuesta){ //el id de batalla es el mismo que el de usr
+                    console.log(respuesta);
+                    respuesta.credito -= parseInt($scope.UsuarioBatalla.batalla.jugadorUno.valorApuesta);
+                      UsuarioBatallaService.saveById(respuesta.$id);
+                  },function(error){
+                    console.log(error);
+                });
+              
+            },function(error){
+              console.log(error);
+          });
+
+
+        }
+
+      $timeout(function(){
+       $ionicLoading.hide();
+
+        if ($scope.currentUser.uid == $scope.UsuarioBatalla.batalla.quienGano) {
+          NotificationService.sendNotification($scope.currentUser.uid,"BatallaNaval","../img/pirate-flag.png","Batalla ganada");
+          $scope.showPopup('Ganaste la batalla', 'Felicitaciones! Has acertado al casillero elegido por tu contrincante antes de que él acerte al tuyo!').then(function(){
+            $timeout(function(){
+              
+
+              $state.go('app.mostrar');
+            })
+          })
+        }
+        else {
+          NotificationService.sendNotification($scope.currentUser.uid,"BatallaNaval","../img/pirate-flag.png","Batalla perdida");
+          $scope.showPopup('Perdiste la batalla', 'Han acertado a tu casillero! La próxima seguro tendrás mas suerte.').then(function(){
+            $timeout(function(){
+
+              $state.go('app.mostrar');
+            })
+          })
+        }
+
+        // SE LIMPIA LA BATALLA PISANDOLA CON UNA NUEVA
+        UsuarioBatallaService.addNewBatalla($scope.UsuarioBatalla.batalla.jugadorUno.id);
+      }, 1000);
+      
     }
   })
 })
 
-.controller('controlApuesta', function($scope, $ionicPopup, $state, $stateParams, $timeout, UsuarioBatallaService) {
-  
-  $scope.FinalizarBatalla = function(resultado) {
-    $scope.UsuarioBatalla.computado = true;
-    $scope.UsuarioBatalla.disponible = false;
-
-    BatallaService.save($scope.UsuarioBatalla);
-    console.info("Batalla modificado");
-
-    if (resultado) { //gané
-
-      $scope.usuario.credito += $scope.UsuarioBatalla.valor;
-      UsuarioBatallaService.save($scope.usuario).then(function(){
-        console.info("Usuario " + $scope.usuario.$id + " modificado (+" + $scope.UsuarioBatalla.valor + ")");
-        $scope.showPopup('Felicitaciones :)', 'Ganaste ' + $scope.UsuarioBatalla.valor + ' créditos.');
-      });
-      
-      UsuarioBatallaService.getById($scope.UsuarioBatalla.jugador).then(function(respuesta){
-        if(respuesta){
-          respuesta.credito -= $scope.UsuarioBatalla.valor;
-          console.info("Usuario " + $scope.UsuarioBatalla.jugador + " modificado (-" + $scope.UsuarioBatalla.valor + ")");
-        }
-      },function(error){
-        console.log(error);
-      });
-
-    }
-    else { //perdí
-
-      $scope.usuario.credito -= $scope.UsuarioBatalla.valor;
-      UsuarioBatallaService.save($scope.usuario).then(function(){
-        console.info("Usuario " + $scope.usuario.$id + " modificado (-" + $scope.UsuarioBatalla.valor + ")");
-        $scope.showPopup('Que pena :(', 'Perdiste ' + $scope.UsuarioBatalla.valor + ' créditos.');
-      });
-      
-      UsuarioBatallaService.getById($scope.UsuarioBatalla.jugador).then(function(respuesta){
-        if(respuesta){
-          respuesta.credito += $scope.UsuarioBatalla.valor;
-          console.info("Usuario " + $scope.UsuarioBatalla.jugador + " modificado (+" + $scope.UsuarioBatalla.valor + ")");
-        }
-      },function(error){
-        console.log(error);
-      });
-
-    }
-  }
-})
-
-.controller('controlAceptados', function($scope, $state, UsuarioBatallaService, $timeout) {
-  $scope.mostrar=false;
-  $scope.aceptados=true;
-  $scope.todos=false;
-  $scope.titulo="Batallas Aceptados";
-  $scope.userID = firebase.auth().currentUser.uid;
-  $scope.datos=[];
-  $scope.DateNow = new Date().getTime();
-  
-  $scope.showLoading();
-  
-  BatallaService.getAll().then(function(respuesta){
-    $scope.datos=respuesta;
-    $scope.hideLoading(); 
-  },function(error){
-    console.log(error);
-  });
-
-  $scope.Terminado=function(batalla){
-      batalla.disponible=false;
-      BatallaService.save(batalla);
-  }
-})
-
-
-.controller('controlMisBatallas', function($scope, $state, UsuarioBatallaService, $timeout) {
-  $scope.userID = firebase.auth().currentUser.uid;
-  $scope.titulo="Mis Batallas";
-  $scope.mostrar=true;
-  $scope.todos=false;
-  $scope.aceptados=false;
-  $scope.DateNow = new Date().getTime();
-  $scope.datos=[];
-  
-  $scope.showLoading();
-
-  BatallaService.getAll().then(function(respuesta){
-    $scope.datos=respuesta;
-    $scope.hideLoading(); 
-  },function(error){
-    console.log(error);
-  });
-
-  $scope.mostrarBatalla = function(index){
-    $state.go('app.apuesta', {batalla:index} );
-  }
-
-  $scope.Terminado=function(batalla){ //callback del timer
-      batalla.disponible=false;
-      BatallaService.save(batalla);
-  }
-})
-
 .controller('controlPerfil', function($scope, $state, UsuarioBatallaService) {
   $scope.usuario = {};
+  $scope.imagen={};
+  $scope.imagen.foto="Pirate-Ship.png";
   $scope.showLoading();
 
   var id = firebase.auth().currentUser.uid;
-  UsuarioBatallaService.getById(id).then(function(respuesta){
+  UsuarioBatallaService.getByUserId(id).then(function(respuesta){
     $scope.usuario = respuesta;
     $scope.usuario.mail = firebase.auth().currentUser.email;
     $scope.hideLoading(); 

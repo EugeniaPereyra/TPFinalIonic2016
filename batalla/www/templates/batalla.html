@@ -11,18 +11,19 @@
   </div>
 
   <center>
-    <div class="item" style="width: 100%; overflow: normal;">
-      <div class="card" layout-fill layout="column">
-        <div><strong>currentUser.uid: {{currentUser.uid}}</strong></div>
-        <div><strong>Etapa del juego: {{UsuarioBatalla.batalla.etapa}}</strong></div>
+    <div class="item" style="width: 100%; background-image:url('./img/dark_sea.png')">
+      <div class="card" style="flex-wrap: wrap; background-color: rgba(255, 255, 255, 0.56);">
         <div><strong>{{mensaje}}</strong></div>
+        <div class="item range" ng-if="UsuarioBatalla.batalla.etapa == 1">
+          <p><strong>10</strong></p>
+          <input type="range" min="10" max="100" value="50" step="10" ng-model="valor.apuesta">
+          <p><strong>100</strong></p>
+        </div>
         <br>
         <div style="flex: 50;" layout="row" layout-wrap>
           <ng-repeat ng-repeat="row in getCasilleros(currentUser.uid) track by row.id ">
-            <button class="button button-outline button-dark" style="width: 50%;" id="btn_{{ row.id }}" ng-click="Seleccionar($event)" ng-class="{marcado:getClass(row.id)}">
+            <button class="col button button-outline button-dark" style="width: 50%; height: 50%; border-radius: 0px;" id="btn_{{ row.id }}" ng-click="Seleccionar($event)" ng-class="{marcado:getClass(row.id)}">
               Casillero {{row.id}}
-              <br>
-              {{row.marcado}}
             </button>
 
           </ng-repeat>
@@ -31,7 +32,7 @@
         <br>
       </div>
       
-      <button class="button button-large button-outline button-balanced" ng-click="Aceptar()" ng-if="currentUser.uid == UsuarioBatalla.batalla.quienJuega">
+      <button class="button button-large button-dark" ng-click="Aceptar()" ng-if="currentUser.uid == UsuarioBatalla.batalla.quienJuega">
         Listo
       </button>
 

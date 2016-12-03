@@ -1,11 +1,11 @@
 <ion-view view-title="Perfil" class="pagina">
   <ion-content>
     <div class="col header text-center">
-		<img ng-src="img/brain-2.png"/>
+		<img style="width: 30%; height: 30%;" ng-src="img/{{imagen.foto}}"/>
   	</div>
     <br>
-    <h2>{{usuario.mail}}</h2>
-    <p>Saldo: {{usuario.credito | currency}} </p>
+    <h2 style="color: white;">{{usuario.mail}}</h2>
+    <p style="color: white;">Saldo: {{usuario.credito | currency}} </p>
     <br>
     
   </ion-content>

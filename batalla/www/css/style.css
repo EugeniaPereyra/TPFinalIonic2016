@@ -8,6 +8,18 @@
 /* when showing the picture */
 .ng-hide-remove      { animation:0.5s fadeInDown ease; }
 
+.popup-open .backdrop {
+z-index: 11;
+}
+
+ion-content {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    height: 100%;
+  
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d7f0e6), color-stop(100%,#cfdfd9));
+    background: -webkit-linear-gradient(top, #17dc8d 0%,#171717 100%);
+}
 
 .login {
     background-color: #F5DA81;
@@ -19,7 +31,7 @@
     height: 100%;
   
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d7f0e6), color-stop(100%,#cfdfd9));
-    background: -webkit-linear-gradient(top, #d7f0e6 0%,#cfdfd9 100%);
+    background: -webkit-linear-gradient(top, #17dc8d 0%,#171717 100%);
 }
 .login-container img {
     max-width: 100%;
@@ -29,6 +41,9 @@
     width: 100%;
     max-width: 60%;
     min-width: 230px;
+}
+.login-container .item {
+    border-color: rgba(221, 221, 221, 0);
 }
 .pagina{
 	background-color: #d7f0e6;
@@ -90,6 +105,9 @@ ion-icon{
 
 }
 
+.card .range {
+    background-color: rgba(255, 255, 255, 0.40);
+}
 
 /*-------------------------------*/
 /*     Sidebar nav styles        */
@@ -105,6 +123,7 @@ ion-icon{
 }
 
 .sidebar-nav ion-item {
+    background-color: rgba(134, 121, 121, 0.46);
     position: relative; 
     line-height: 20px;
     display: inline-block;

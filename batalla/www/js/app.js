@@ -85,38 +85,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factories','
       }
   })
 
-  .state('app.apuesta', {
-    url: '/apuesta',
-    views: {
-      'menuContent': {
-          templateUrl: 'templates/apuesta.html',
-          controller: 'controlApuesta'
-        }
-      }
-  })
-
-  .state('app.aceptados', {
-    url: '/aceptados',
-    cache: false,
-    views: {
-      'menuContent': {
-          templateUrl: 'templates/mostrar.html',
-          controller: 'controlAceptados'
-        }
-      }
-  })
-
-  .state('app.misBatallas', {
-    url: '/misBatallas',
-    cache: false,
-    views: {
-      'menuContent': {
-          templateUrl: 'templates/mostrar.html',
-          controller: 'controlMisBatallas'
-        }
-      }
-  })
-
   .state('app.perfil', {
     url: '/perfil',
     views: {
